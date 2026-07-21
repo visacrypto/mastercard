@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MasterCard – Virtual Cards | Creation, Top-up, Multi-currency</title>
+    <link rel="icon" href="mc-favicon.png" type="image/png" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0a0a1a; color: #fff; line-height: 1.6; overflow-x: hidden; }
+        a { color: #eb001b; text-decoration: none; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+        .lang-bar {
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 8px 0;
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        .lang-bar .container { display: flex; justify-content: flex-end; gap: 12px; flex-wrap: wrap; }
+        .lang-bar a { color: #7a84a3; transition: color 0.3s; font-weight: 500; padding: 4px 12px; border-radius: 4px; cursor: pointer; }
+        .lang-bar a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+        .lang-bar a.active { color: #eb001b; background: rgba(235,0,27,0.12); }
+
+        .bg-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: radial-gradient(ellipse at 20% 50%, #1a1a4e, #0a0a1a 70%);
+            overflow: hidden;
+        }
+        .bg-canvas::before {
+            content: ''; position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+            background: radial-gradient(circle at 30% 40%, rgba(235,0,27,0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(247,158,27,0.06) 0%, transparent 50%);
+            animation: bgPulse 12s ease-in-out infinite alternate;
+        }
+        @keyframes bgPulse { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-5%,-3%) scale(1.1); } }
+        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; animation: orbFloat 18s infinite alternate ease-in-out; }
+        .orb-1 { width: 500px; height: 500px; background: #eb001b; top: -10%; left: -5%; }
+        .orb-2 { width: 400px; height: 400px; background: #f79e1b; bottom: -10%; right: -5%; animation-delay: -6s; }
+        .orb-3 { width: 300px; height: 300px; background: #9945ff; top: 50%; left: 50%; animation-delay: -12s; }
+        .orb-4 { width: 350px; height: 350px; background: #ff6b6b; top: 20%; right: 10%; animation-delay: -4s; }
+        .orb-5 { width: 250px; height: 250px; background: #ffd93d; bottom: 20%; left: 10%; animation-delay: -9s; }
+        @keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(60px,-40px) scale(1.2); } }
+
+        .ticker-wrap {
+            position: relative; z-index: 5; width: 100%; overflow: hidden;
+            background: rgba(255,255,255,0.03);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 10px 0;
+            white-space: nowrap;
+        }
+        .ticker {
+            display: inline-block;
+            animation: tickerScroll 30s linear infinite;
+            font-size: 14px;
+            font-weight: 500;
+            color: #b0b8d1;
+        }
+        .ticker span { margin: 0 40px; color: #eb001b; }
+        .ticker .highlight { color: #f79e1b; }
+        @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        header {
+            position: relative; z-index: 10; padding: 18px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            background: rgba(10,10,26,0.6);
+        }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .logo-wrap { display: flex; align-items: center; gap: 12px; }
+        .logo-wrap img { height: 44px; width: auto; }
+        .logo-wrap span {
+            font-weight: 700; font-size: 22px; letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .nav-links a {
+            font-size: 13px; font-weight: 500; color: #b0b8d1; transition: color 0.3s, background 0.3s;
+            padding: 6px 12px; border-radius: 8px;
+        }
+        .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .nav-links a.active { color: #eb001b; background: rgba(235,0,27,0.1); }
+        .btn-header {
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+            padding: 10px 28px; border-radius: 40px; font-weight: 600; font-size: 14px;
+            color: #fff !important; transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(235,0,27,0.3);
+        }
+        .btn-header:hover { transform: scale(1.04); box-shadow: 0 6px 30px rgba(235,0,27,0.5); }
+
+        .page-hero { position: relative; z-index: 5; padding: 40px 0 30px; text-align: center; }
+        .page-hero h1 { font-size: clamp(32px, 4vw, 48px); font-weight: 700; }
+        .page-hero h1 span { background: linear-gradient(135deg, #eb001b, #f79e1b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .page-hero p { color: #b0b8d1; max-width: 600px; margin: 12px auto 0; }
+
+        .badge {
+            display: inline-block; background: rgba(235,0,27,0.12); color: #eb001b;
+            padding: 4px 18px; border-radius: 40px; font-size: 13px; font-weight: 600;
+            letter-spacing: 0.5px; margin-bottom: 14px; border: 1px solid rgba(235,0,27,0.15);
+        }
+
+        .section-title { text-align: center; margin: 40px 0 32px; }
+        .section-title h2 { font-size: clamp(26px, 3vw, 36px); font-weight: 700; }
+        .section-title p { color: #b0b8d1; }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+            margin: 24px 0;
+            position: relative; z-index: 5;
+        }
+        .card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 20px 18px;
+            transition: transform 0.3s, border-color 0.3s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .card:hover { transform: translateY(-4px); border-color: rgba(235,0,27,0.25); }
+        .card .icon { font-size: 28px; margin-bottom: 8px; display: block; }
+        .card h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .card p { color: #b0b8d1; font-size: 13px; }
+        .card .tag {
+            display: inline-block; background: rgba(235,0,27,0.08); color: #eb001b;
+            padding: 2px 12px; border-radius: 40px; font-size: 11px; font-weight: 600;
+            margin-top: 8px; border: 1px solid rgba(235,0,27,0.08);
+        }
+        .card .link { display: block; margin-top: 10px; font-size: 13px; font-weight: 600; color: #eb001b; }
+        .card .link:hover { text-decoration: underline; }
+
+        .mastercard-global-banner {
+            background: linear-gradient(135deg, rgba(26,26,78,0.8), rgba(10,10,26,0.8));
+            border: 1px solid rgba(235,0,27,0.15);
+            border-radius: 20px; padding: 32px 40px; margin: 40px 0;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;
+        }
+        .mastercard-global-banner h3 { font-size: 22px; }
+        .mastercard-global-banner p { color: #b0b8d1; max-width: 500px; }
+
+        footer {
+            position: relative; z-index: 5; padding: 40px 0 24px;
+            border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px;
+        }
+        .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-inner p { color: #5a6380; font-size: 14px; }
+        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials a { color: #5a6380; font-size: 18px; transition: color 0.3s; }
+        .footer-socials a:hover { color: #fff; }
+        .footer-disclaimer { text-align: center; margin-top: 20px; font-size: 12px; color: #3a4360; max-width: 700px; margin-left: auto; margin-right: auto; }
+
+        @media (max-width: 600px) {
+            .nav-links { gap: 8px; }
+            .nav-links a { font-size: 12px; padding: 4px 8px; }
+            .cards-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .mastercard-global-banner { flex-direction: column; text-align: center; }
+            .ticker { font-size: 12px; }
+        }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="lang-bar">
+    <div class="container" id="languageSwitcher">
+        <a data-lang="en" class="active">English</a>
+        <a data-lang="ru">Русский</a>
+        <a data-lang="es">Español</a>
+        <a data-lang="fr">Français</a>
+        <a data-lang="zh">中文</a>
+        <a data-lang="ja">日本語</a>
+        <a data-lang="ar">العربية</a>
+        <a data-lang="hi">हिन्दी</a>
+    </div>
+</div>
+
+<div class="bg-canvas">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+</div>
+
+<div class="ticker-wrap">
+    <div class="ticker">
+        <span>💳 Virtual — Revolut, Wise</span>
+        <span>🪙 Crypto — Crypto.com, BitPay</span>
+        <span>💰 Top-up — MoonPay, Ramp</span>
+        <span>💱 Multi-Currency — Wise, Revolut</span>
+        <span>🔐 Secure — 3D Secure, Insurance</span>
+        <span>💳 Virtual — Revolut, Wise</span>
+        <span>🪙 Crypto — Crypto.com, BitPay</span>
+        <span>💰 Top-up — MoonPay, Ramp</span>
+        <span>💱 Multi-Currency — Wise, Revolut</span>
+        <span>🔐 Secure — 3D Secure, Insurance</span>
+    </div>
+</div>
+
+<header>
+    <div class="container header-inner">
+        <div class="logo-wrap">
+            <img src="mc-logo-primary.png" alt="MasterCard" />
+            <span>MasterCard</span>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Home</a>
+            <a href="page2.html" data-i18n="nav_finance">Finance</a>
+            <a href="page3.html" data-i18n="nav_crypto">Crypto</a>
+            <a href="page4.html" data-i18n="nav_exchange">Exchange</a>
+            <a href="page5.html" data-i18n="nav_insurance">Insurance</a>
+            <a href="page6.html" data-i18n="nav_business">Business</a>
+            <a href="page7.html" data-i18n="nav_travel">Travel</a>
+            <a href="page8.html" class="active" data-i18n="nav_cards">Cards</a>
+            <a href="index.html#buy" class="btn-header" data-i18n="nav_buy">Buy MasterCard</a>
+        </nav>
+    </div>
+</header>
+
+<section class="page-hero">
+    <div class="container">
+        <div class="badge" data-i18n="p8_badge">💳 100+ Card Products</div>
+        <h1><span data-i18n="p8_title">Virtual</span> <span data-i18n="p8_title2">Cards</span></h1>
+        <p data-i18n="p8_desc">Creation, top-up, multi-currency, crypto cards and more than 100 solutions through MasterCard.</p>
+        <div style="margin-top:16px;">
+            <a href="https://www.mastercard.com/global/en.html" target="_blank" class="btn-secondary" data-i18n="hero_btn_mastercard" style="display:inline-block;">🌐 MasterCard Global</a>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="section-title fade-in">
+        <h2><span data-i18n="p8_sec_title">All</span> <span style="color:#eb001b;" data-i18n="p8_sec_title2">Card Products</span></h2>
+        <p data-i18n="p8_sec_desc">More than 100 tools for card and crypto management.</p>
+    </div>
+    <div class="cards-grid">
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p8_virt1">MasterCard Virtual Card</h4><p data-i18n="p8_virt1_desc">Online payments</p><span class="tag" data-i18n="p8_tag_virt">Virtual</span><a href="https://www.revolut.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p8_virt2">VISA Virtual Card</h4><p data-i18n="p8_virt2_desc">Online payments</p><span class="tag" data-i18n="p8_tag_virt">Virtual</span><a href="https://www.wise.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p8_virt3">UnionPay Virtual Card</h4><p data-i18n="p8_virt3_desc">For Asia</p><span class="tag" data-i18n="p8_tag_virt">Virtual</span><a href="https://www.unionpayintl.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p8_virt4">AMEX Virtual Card</h4><p data-i18n="p8_virt4_desc">Premium</p><span class="tag" data-i18n="p8_tag_virt">Virtual</span><a href="https://www.americanexpress.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p8_virt5">One-Time Card</h4><p data-i18n="p8_virt5_desc">Security</p><span class="tag" data-i18n="p8_tag_virt">Virtual</span><a href="https://www.privacy.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p8_virt6">Business Card</h4><p data-i18n="p8_virt6_desc">Corporate</p><span class="tag" data-i18n="p8_tag_virt">Virtual</span><a href="https://www.brex.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p8_virt7">Freelancer Card</h4><p data-i18n="p8_virt7_desc">Self-employed</p><span class="tag" data-i18n="p8_tag_virt">Virtual</span><a href="https://www.payoneer.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p8_virt8">Kids Card</h4><p data-i18n="p8_virt8_desc">Parental control</p><span class="tag" data-i18n="p8_tag_virt">Virtual</span><a href="https://www.greenlight.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+
+        <div class="card fade-in"><span class="icon">🪙</span><h4 data-i18n="p8_crypto1">MasterCard Crypto Card</h4><p data-i18n="p8_crypto1_desc">Pay with crypto</p><span class="tag" data-i18n="p8_tag_crypto">Crypto</span><a href="https://crypto.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">🪙</span><h4 data-i18n="p8_crypto2">VISA Crypto Card</h4><p data-i18n="p8_crypto2_desc">Pay with crypto</p><span class="tag" data-i18n="p8_tag_crypto">Crypto</span><a href="https://www.bitwala.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">🪙</span><h4 data-i18n="p8_crypto3">USDC Card</h4><p data-i18n="p8_crypto3_desc">Stablecoins</p><span class="tag" data-i18n="p8_tag_crypto">Crypto</span><a href="https://www.coinbase.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">🪙</span><h4 data-i18n="p8_crypto4">BTC Card</h4><p data-i18n="p8_crypto4_desc">Bitcoin</p><span class="tag" data-i18n="p8_tag_crypto">Crypto</span><a href="https://www.bitpay.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">🪙</span><h4 data-i18n="p8_crypto5">ETH Card</h4><p data-i18n="p8_crypto5_desc">Ethereum</p><span class="tag" data-i18n="p8_tag_crypto">Crypto</span><a href="https://www.bitpay.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">🪙</span><h4 data-i18n="p8_crypto6">SOL Card</h4><p data-i18n="p8_crypto6_desc">Solana</p><span class="tag" data-i18n="p8_tag_crypto">Crypto</span><a href="https://phantom.app" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+
+        <div class="card fade-in"><span class="icon">💰</span><h4 data-i18n="p8_top1">Card Top-up</h4><p data-i18n="p8_top1_desc">From bank account</p><span class="tag" data-i18n="p8_tag_top">Top-up</span><a href="https://www.wise.com" class="link" target="_blank" data-i18n="p8_link_topup">Top-up →</a></div>
+        <div class="card fade-in"><span class="icon">💰</span><h4 data-i18n="p8_top2">Crypto Card Top-up</h4><p data-i18n="p8_top2_desc">From wallet</p><span class="tag" data-i18n="p8_tag_top">Top-up</span><a href="https://www.moonpay.com" class="link" target="_blank" data-i18n="p8_link_topup">Top-up →</a></div>
+        <div class="card fade-in"><span class="icon">💰</span><h4 data-i18n="p8_top3">SWIFT Top-up</h4><p data-i18n="p8_top3_desc">International</p><span class="tag" data-i18n="p8_tag_top">Top-up</span><a href="https://www.swift.com" class="link" target="_blank" data-i18n="p8_link_topup">Top-up →</a></div>
+        <div class="card fade-in"><span class="icon">💰</span><h4 data-i18n="p8_top4">Card-to-Card Top-up</h4><p data-i18n="p8_top4_desc">From another card</p><span class="tag" data-i18n="p8_tag_top">Top-up</span><a href="https://www.creditkarma.com" class="link" target="_blank" data-i18n="p8_link_topup">Top-up →</a></div>
+        <div class="card fade-in"><span class="icon">💰</span><h4 data-i18n="p8_top5">QR Top-up</h4><p data-i18n="p8_top5_desc">Fast</p><span class="tag" data-i18n="p8_tag_top">Top-up</span><a href="https://www.paypal.com" class="link" target="_blank" data-i18n="p8_link_topup">Top-up →</a></div>
+        <div class="card fade-in"><span class="icon">💰</span><h4 data-i18n="p8_top6">Exchange Top-up</h4><p data-i18n="p8_top6_desc">Binance, Bybit</p><span class="tag" data-i18n="p8_tag_top">Top-up</span><a href="https://www.binance.com" class="link" target="_blank" data-i18n="p8_link_topup">Top-up →</a></div>
+
+        <div class="card fade-in"><span class="icon">💱</span><h4 data-i18n="p8_multi1">Multi-Currency Card</h4><p data-i18n="p8_multi1_desc">50+ currencies</p><span class="tag" data-i18n="p8_tag_multi">Multi</span><a href="https://www.wise.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">💱</span><h4 data-i18n="p8_multi2">USD Card</h4><p data-i18n="p8_multi2_desc">USD</p><span class="tag" data-i18n="p8_tag_multi">Multi</span><a href="https://www.revolut.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">💱</span><h4 data-i18n="p8_multi3">EUR Card</h4><p data-i18n="p8_multi3_desc">EUR</p><span class="tag" data-i18n="p8_tag_multi">Multi</span><a href="https://www.wise.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">💱</span><h4 data-i18n="p8_multi4">GBP Card</h4><p data-i18n="p8_multi4_desc">GBP</p><span class="tag" data-i18n="p8_tag_multi">Multi</span><a href="https://www.revolut.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">💱</span><h4 data-i18n="p8_multi5">JPY Card</h4><p data-i18n="p8_multi5_desc">JPY</p><span class="tag" data-i18n="p8_tag_multi">Multi</span><a href="https://www.wise.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+        <div class="card fade-in"><span class="icon">💱</span><h4 data-i18n="p8_multi6">CNY Card</h4><p data-i18n="p8_multi6_desc">CNY</p><span class="tag" data-i18n="p8_tag_multi">Multi</span><a href="https://www.wise.com" class="link" target="_blank" data-i18n="p8_link_create">Create →</a></div>
+
+        <div class="card fade-in"><span class="icon">🔒</span><h4 data-i18n="p8_mgmt1">3D Secure</h4><p data-i18n="p8_mgmt1_desc">Security</p><span class="tag" data-i18n="p8_tag_mgmt">Security</span><a href="https://www.mastercard.com/global/en.html" class="link" target="_blank" data-i18n="p8_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">📱</span><h4 data-i18n="p8_mgmt2">Notifications</h4><p data-i18n="p8_mgmt2_desc">Transaction alerts</p><span class="tag" data-i18n="p8_tag_mgmt">Management</span><a href="https://www.revolut.com" class="link" target="_blank" data-i18n="p8_link_setup">Setup →</a></div>
+        <div class="card fade-in"><span class="icon">🔐</span><h4 data-i18n="p8_mgmt3">Card Blocking</h4><p data-i18n="p8_mgmt3_desc">Online</p><span class="tag" data-i18n="p8_tag_mgmt">Management</span><a href="https://www.wise.com" class="link" target="_blank" data-i18n="p8_link_setup">Setup →</a></div>
+        <div class="card fade-in"><span class="icon">📊</span><h4 data-i18n="p8_mgmt4">Card Reports</h4><p data-i18n="p8_mgmt4_desc">Analytics</p><span class="tag" data-i18n="p8_tag_mgmt">Management</span><a href="https://www.tableau.com" class="link" target="_blank" data-i18n="p8_link_setup">Setup →</a></div>
+        <div class="card fade-in"><span class="icon">📈</span><h4 data-i18n="p8_mgmt5">Card Limits</h4><p data-i18n="p8_mgmt5_desc">Control</p><span class="tag" data-i18n="p8_tag_mgmt">Management</span><a href="https://www.ramp.com" class="link" target="_blank" data-i18n="p8_link_setup">Setup →</a></div>
+        <div class="card fade-in"><span class="icon">🌐</span><h4 data-i18n="p8_mgmt6">International Transfers</h4><p data-i18n="p8_mgmt6_desc">Card to card</p><span class="tag" data-i18n="p8_tag_mgmt">Payments</span><a href="https://www.wise.com" class="link" target="_blank" data-i18n="p8_link_apply">Apply →</a></div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="mastercard-global-banner">
+        <div>
+            <h3 data-i18n="mastercard_banner_title">🌐 Official <span style="color:#eb001b;">MasterCard Global</span></h3>
+            <p data-i18n="mastercard_banner_desc">Powering economies and empowering people. Innovative solutions for a safer, smarter, digital economy.</p>
+        </div>
+        <a href="https://www.mastercard.com/global/en.html" target="_blank" class="btn-primary" style="flex-shrink:0;" data-i18n="mastercard_banner_btn">Visit mastercard.com →</a>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-inner">
+            <div class="logo-wrap"><img src="mc-logo-primary.png" alt="MasterCard" style="height:32px;" /><span style="font-size:16px;background:linear-gradient(135deg,#eb001b,#f79e1b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">MasterCard</span></div>
+            <div class="footer-socials">
+                <a href="https://www.mastercard.com/global/en.html" target="_blank">🌐 MasterCard Global</a>
+                <a href="https://twitter.com/mastercard" target="_blank">🐦 X</a>
+                <a href="https://t.me/mastercard_official" target="_blank">💬 Telegram</a>
+            </div>
+        </div>
+        <div class="footer-disclaimer" data-i18n="footer_disclaimer">⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR).</div>
+    </div>
+</footer>
+
+<script>
+    const translations = {
+        en: {
+            nav_home: "Home", nav_finance: "Finance", nav_crypto: "Crypto", nav_exchange: "Exchange",
+            nav_insurance: "Insurance", nav_business: "Business", nav_travel: "Travel", nav_cards: "Cards", nav_buy: "Buy MasterCard",
+            hero_btn_mastercard: "🌐 MasterCard Global",
+            mastercard_banner_title: "🌐 Official MasterCard Global",
+            mastercard_banner_desc: "Powering economies and empowering people. Innovative solutions for a safer, smarter, digital economy.",
+            mastercard_banner_btn: "Visit mastercard.com →",
+            footer_disclaimer: "⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR).",
+            p8_badge: "💳 100+ Card Products",
+            p8_title: "Virtual", p8_title2: "Cards",
+            p8_desc: "Creation, top-up, multi-currency, crypto cards and more than 100 solutions through MasterCard.",
+            p8_sec_title: "All", p8_sec_title2: "Card Products", p8_sec_desc: "More than 100 tools for card and crypto management.",
+            p8_link_create: "Create →", p8_link_topup: "Top-up →", p8_link_apply: "Apply →", p8_link_setup: "Setup →",
+            p8_tag_virt: "Virtual", p8_tag_crypto: "Crypto", p8_tag_top: "Top-up", p8_tag_multi: "Multi", p8_tag_mgmt: "Management",
+            p8_virt1: "MasterCard Virtual Card", p8_virt1_desc: "Online payments",
+            p8_virt2: "VISA Virtual Card", p8_virt2_desc: "Online payments",
+            p8_virt3: "UnionPay Virtual Card", p8_virt3_desc: "For Asia",
+            p8_virt4: "AMEX Virtual Card", p8_virt4_desc: "Premium",
+            p8_virt5: "One-Time Card", p8_virt5_desc: "Security",
+            p8_virt6: "Business Card", p8_virt6_desc: "Corporate",
+            p8_virt7: "Freelancer Card", p8_virt7_desc: "Self-employed",
+            p8_virt8: "Kids Card", p8_virt8_desc: "Parental control",
+            p8_crypto1: "MasterCard Crypto Card", p8_crypto1_desc: "Pay with crypto",
+            p8_crypto2: "VISA Crypto Card", p8_crypto2_desc: "Pay with crypto",
+            p8_crypto3: "USDC Card", p8_crypto3_desc: "Stablecoins",
+            p8_crypto4: "BTC Card", p8_crypto4_desc: "Bitcoin",
+            p8_crypto5: "ETH Card", p8_crypto5_desc: "Ethereum",
+            p8_crypto6: "SOL Card", p8_crypto6_desc: "Solana",
+            p8_top1: "Card Top-up", p8_top1_desc: "From bank account",
+            p8_top2: "Crypto Card Top-up", p8_top2_desc: "From wallet",
+            p8_top3: "SWIFT Top-up", p8_top3_desc: "International",
+            p8_top4: "Card-to-Card Top-up", p8_top4_desc: "From another card",
+            p8_top5: "QR Top-up", p8_top5_desc: "Fast",
+            p8_top6: "Exchange Top-up", p8_top6_desc: "Binance, Bybit",
+            p8_multi1: "Multi-Currency Card", p8_multi1_desc: "50+ currencies",
+            p8_multi2: "USD Card", p8_multi2_desc: "USD",
+            p8_multi3: "EUR Card", p8_multi3_desc: "EUR",
+            p8_multi4: "GBP Card", p8_multi4_desc: "GBP",
+            p8_multi5: "JPY Card", p8_multi5_desc: "JPY",
+            p8_multi6: "CNY Card", p8_multi6_desc: "CNY",
+            p8_mgmt1: "3D Secure", p8_mgmt1_desc: "Security",
+            p8_mgmt2: "Notifications", p8_mgmt2_desc: "Transaction alerts",
+            p8_mgmt3: "Card Blocking", p8_mgmt3_desc: "Online",
+            p8_mgmt4: "Card Reports", p8_mgmt4_desc: "Analytics",
+            p8_mgmt5: "Card Limits", p8_mgmt5_desc: "Control",
+            p8_mgmt6: "International Transfers", p8_mgmt6_desc: "Card to card"
+        },
+        ru: {
+            nav_home: "Главная", nav_finance: "Финансы", nav_crypto: "Крипто", nav_exchange: "Биржа",
+            nav_insurance: "Страхование", nav_business: "Бизнес", nav_travel: "Туризм", nav_cards: "Карты", nav_buy: "Купить MasterCard",
+            hero_btn_mastercard: "🌐 MasterCard Global",
+            mastercard_banner_title: "🌐 Официальный сайт MasterCard Global",
+            mastercard_banner_desc: "Расширение экономических возможностей и расширение прав и возможностей людей. Инновационные решения для более безопасной, умной и цифровой экономики.",
+            mastercard_banner_btn: "Перейти на mastercard.com →",
+            footer_disclaimer: "⚠️ Данный проект является сообщественным и не аффилирован с Mastercard Incorporated. Криптовалютные инвестиции сопряжены с высоким риском. Всегда проводите собственное исследование (DYOR).",
+            p8_badge: "💳 100+ карточных продуктов",
+            p8_title: "Виртуальные", p8_title2: "карты",
+            p8_desc: "Создание, пополнение, мультивалютность, криптокарты и более 100 решений через MasterCard.",
+            p8_sec_title: "Все", p8_sec_title2: "карточные продукты", p8_sec_desc: "Более 100 инструментов для управления картами и криптовалютами.",
+            p8_link_create: "Создать →", p8_link_topup: "Пополнить →", p8_link_apply: "Оформить →", p8_link_setup: "Настроить →",
+            p8_tag_virt: "Виртуальная", p8_tag_crypto: "Криптокарта", p8_tag_top: "Пополнение", p8_tag_multi: "Мультивалютная", p8_tag_mgmt: "Управление",
+            p8_virt1: "Виртуальная карта MasterCard", p8_virt1_desc: "Онлайн-оплата",
+            p8_virt2: "Виртуальная карта VISA", p8_virt2_desc: "Онлайн-оплата",
+            p8_virt3: "Виртуальная карта UnionPay", p8_virt3_desc: "Для Азии",
+            p8_virt4: "Виртуальная карта AMEX", p8_virt4_desc: "Премиум",
+            p8_virt5: "Одноразовая карта", p8_virt5_desc: "Для безопасности",
+            p8_virt6: "Карта для бизнеса", p8_virt6_desc: "Корпоративная",
+            p8_virt7: "Карта для фриланса", p8_virt7_desc: "Самозанятые",
+            p8_virt8: "Карта для детей", p8_virt8_desc: "Родительский контроль",
+            p8_crypto1: "Криптокарта MasterCard", p8_crypto1_desc: "Оплата криптой",
+            p8_crypto2: "Криптокарта VISA", p8_crypto2_desc: "Оплата криптой",
+            p8_crypto3: "Карта на USDC", p8_crypto3_desc: "Стейблкоины",
+            p8_crypto4: "Карта на BTC", p8_crypto4_desc: "Биткоин",
+            p8_crypto5: "Карта на ETH", p8_crypto5_desc: "Эфириум",
+            p8_crypto6: "Карта на SOL", p8_crypto6_desc: "Солана",
+            p8_top1: "Пополнение карты", p8_top1_desc: "С банковского счета",
+            p8_top2: "Пополнение криптокарты", p8_top2_desc: "С кошелька",
+            p8_top3: "Пополнение с SWIFT", p8_top3_desc: "Международное",
+            p8_top4: "Пополнение с карты", p8_top4_desc: "Другой картой",
+            p8_top5: "Пополнение через QR", p8_top5_desc: "Быстро",
+            p8_top6: "Пополнение с криптобиржи", p8_top6_desc: "Binance, Bybit",
+            p8_multi1: "Мультивалютная карта", p8_multi1_desc: "50+ валют",
+            p8_multi2: "Карта USD", p8_multi2_desc: "Доллар",
+            p8_multi3: "Карта EUR", p8_multi3_desc: "Евро",
+            p8_multi4: "Карта GBP", p8_multi4_desc: "Фунт",
+            p8_multi5: "Карта JPY", p8_multi5_desc: "Йена",
+            p8_multi6: "Карта CNY", p8_multi6_desc: "Юань",
+            p8_mgmt1: "3D Secure", p8_mgmt1_desc: "Безопасность",
+            p8_mgmt2: "Уведомления", p8_mgmt2_desc: "По операциям",
+            p8_mgmt3: "Блокировка карты", p8_mgmt3_desc: "Онлайн",
+            p8_mgmt4: "Отчёты по карте", p8_mgmt4_desc: "Аналитика",
+            p8_mgmt5: "Лимиты на карте", p8_mgmt5_desc: "Контроль",
+            p8_mgmt6: "Международные переводы", p8_mgmt6_desc: "С карты на карту"
+        },
+        es: {}, fr: {}, zh: {}, ja: {}, ar: {}, hi: {}
+    };
+
+    let currentLang = localStorage.getItem('mastercardLang') || 'en';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('mastercardLang', lang);
+        document.querySelectorAll('#languageSwitcher a').forEach(el => {
+            el.classList.toggle('active', el.dataset.lang === lang);
+        });
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            const translation = translations[lang]?.[key];
+            if (translation !== undefined) el.textContent = translation;
+        });
+        document.documentElement.lang = lang;
+    }
+
+    document.querySelectorAll('#languageSwitcher a').forEach(el => {
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            setLanguage(this.dataset.lang);
+        });
+    });
+
+    const faders = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    faders.forEach(el => observer.observe(el));
+
+    setLanguage(currentLang);
+</script>
+</body>
+</html>
