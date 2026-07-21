@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MasterCard – Crypto Operations | RWA, Tokenization, Staking, Loans</title>
+    <link rel="icon" href="mc-favicon.png" type="image/png" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0a0a1a; color: #fff; line-height: 1.6; overflow-x: hidden; }
+        a { color: #eb001b; text-decoration: none; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+        .lang-bar {
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 8px 0;
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        .lang-bar .container { display: flex; justify-content: flex-end; gap: 12px; flex-wrap: wrap; }
+        .lang-bar a { color: #7a84a3; transition: color 0.3s; font-weight: 500; padding: 4px 12px; border-radius: 4px; cursor: pointer; }
+        .lang-bar a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+        .lang-bar a.active { color: #eb001b; background: rgba(235,0,27,0.12); }
+
+        .bg-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: radial-gradient(ellipse at 20% 50%, #1a1a4e, #0a0a1a 70%);
+            overflow: hidden;
+        }
+        .bg-canvas::before {
+            content: ''; position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+            background: radial-gradient(circle at 30% 40%, rgba(235,0,27,0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(247,158,27,0.06) 0%, transparent 50%);
+            animation: bgPulse 12s ease-in-out infinite alternate;
+        }
+        @keyframes bgPulse { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-5%,-3%) scale(1.1); } }
+        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; animation: orbFloat 18s infinite alternate ease-in-out; }
+        .orb-1 { width: 500px; height: 500px; background: #eb001b; top: -10%; left: -5%; }
+        .orb-2 { width: 400px; height: 400px; background: #f79e1b; bottom: -10%; right: -5%; animation-delay: -6s; }
+        .orb-3 { width: 300px; height: 300px; background: #9945ff; top: 50%; left: 50%; animation-delay: -12s; }
+        .orb-4 { width: 350px; height: 350px; background: #ff6b6b; top: 20%; right: 10%; animation-delay: -4s; }
+        .orb-5 { width: 250px; height: 250px; background: #ffd93d; bottom: 20%; left: 10%; animation-delay: -9s; }
+        @keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(60px,-40px) scale(1.2); } }
+
+        .ticker-wrap {
+            position: relative; z-index: 5; width: 100%; overflow: hidden;
+            background: rgba(255,255,255,0.03);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 10px 0;
+            white-space: nowrap;
+        }
+        .ticker {
+            display: inline-block;
+            animation: tickerScroll 30s linear infinite;
+            font-size: 14px;
+            font-weight: 500;
+            color: #b0b8d1;
+        }
+        .ticker span { margin: 0 40px; color: #eb001b; }
+        .ticker .highlight { color: #f79e1b; }
+        @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        header {
+            position: relative; z-index: 10; padding: 18px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            background: rgba(10,10,26,0.6);
+        }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .logo-wrap { display: flex; align-items: center; gap: 12px; }
+        .logo-wrap img { height: 44px; width: auto; }
+        .logo-wrap span {
+            font-weight: 700; font-size: 22px; letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .nav-links a {
+            font-size: 13px; font-weight: 500; color: #b0b8d1; transition: color 0.3s, background 0.3s;
+            padding: 6px 12px; border-radius: 8px;
+        }
+        .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .nav-links a.active { color: #eb001b; background: rgba(235,0,27,0.1); }
+        .btn-header {
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+            padding: 10px 28px; border-radius: 40px; font-weight: 600; font-size: 14px;
+            color: #fff !important; transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(235,0,27,0.3);
+        }
+        .btn-header:hover { transform: scale(1.04); box-shadow: 0 6px 30px rgba(235,0,27,0.5); }
+
+        .page-hero { position: relative; z-index: 5; padding: 40px 0 30px; text-align: center; }
+        .page-hero h1 { font-size: clamp(32px, 4vw, 48px); font-weight: 700; }
+        .page-hero h1 span { background: linear-gradient(135deg, #eb001b, #f79e1b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .page-hero p { color: #b0b8d1; max-width: 600px; margin: 12px auto 0; }
+
+        .badge {
+            display: inline-block; background: rgba(235,0,27,0.12); color: #eb001b;
+            padding: 4px 18px; border-radius: 40px; font-size: 13px; font-weight: 600;
+            letter-spacing: 0.5px; margin-bottom: 14px; border: 1px solid rgba(235,0,27,0.15);
+        }
+
+        .section-title { text-align: center; margin: 40px 0 32px; }
+        .section-title h2 { font-size: clamp(26px, 3vw, 36px); font-weight: 700; }
+        .section-title p { color: #b0b8d1; }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+            margin: 24px 0;
+            position: relative; z-index: 5;
+        }
+        .card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 20px 18px;
+            transition: transform 0.3s, border-color 0.3s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .card:hover { transform: translateY(-4px); border-color: rgba(235,0,27,0.25); }
+        .card .icon { font-size: 28px; margin-bottom: 8px; display: block; }
+        .card h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .card p { color: #b0b8d1; font-size: 13px; }
+        .card .tag {
+            display: inline-block; background: rgba(235,0,27,0.08); color: #eb001b;
+            padding: 2px 12px; border-radius: 40px; font-size: 11px; font-weight: 600;
+            margin-top: 8px; border: 1px solid rgba(235,0,27,0.08);
+        }
+        .card .link { display: block; margin-top: 10px; font-size: 13px; font-weight: 600; color: #eb001b; }
+        .card .link:hover { text-decoration: underline; }
+
+        .calculator-section {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 32px 28px;
+            margin: 32px 0;
+            position: relative; z-index: 5;
+        }
+        .calculator-section h3 { font-size: 22px; margin-bottom: 16px; }
+        .calc-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; }
+        .calc-row label { font-size: 14px; color: #b0b8d1; display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
+        .calc-row input {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+        }
+        .calc-row input:focus { outline: none; border-color: #eb001b; }
+        .calc-result { margin-top: 16px; font-size: 20px; font-weight: 700; color: #eb001b; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+            padding: 12px 32px; border-radius: 50px; font-weight: 600; font-size: 15px;
+            color: #fff; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 24px rgba(235,0,27,0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(235,0,27,0.5); }
+
+        .mastercard-global-banner {
+            background: linear-gradient(135deg, rgba(26,26,78,0.8), rgba(10,10,26,0.8));
+            border: 1px solid rgba(235,0,27,0.15);
+            border-radius: 20px; padding: 32px 40px; margin: 40px 0;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;
+        }
+        .mastercard-global-banner h3 { font-size: 22px; }
+        .mastercard-global-banner p { color: #b0b8d1; max-width: 500px; }
+
+        footer {
+            position: relative; z-index: 5; padding: 40px 0 24px;
+            border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px;
+        }
+        .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-inner p { color: #5a6380; font-size: 14px; }
+        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials a { color: #5a6380; font-size: 18px; transition: color 0.3s; }
+        .footer-socials a:hover { color: #fff; }
+        .footer-disclaimer { text-align: center; margin-top: 20px; font-size: 12px; color: #3a4360; max-width: 700px; margin-left: auto; margin-right: auto; }
+
+        @media (max-width: 600px) {
+            .nav-links { gap: 8px; }
+            .nav-links a { font-size: 12px; padding: 4px 8px; }
+            .cards-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .calc-row { flex-direction: column; }
+            .mastercard-global-banner { flex-direction: column; text-align: center; }
+            .ticker { font-size: 12px; }
+        }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="lang-bar">
+    <div class="container" id="languageSwitcher">
+        <a data-lang="en" class="active">English</a>
+        <a data-lang="ru">Русский</a>
+        <a data-lang="es">Español</a>
+        <a data-lang="fr">Français</a>
+        <a data-lang="zh">中文</a>
+        <a data-lang="ja">日本語</a>
+        <a data-lang="ar">العربية</a>
+        <a data-lang="hi">हिन्दी</a>
+    </div>
+</div>
+
+<div class="bg-canvas">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+</div>
+
+<div class="ticker-wrap">
+    <div class="ticker">
+        <span>⛓️ RWA — RealtyToken, Paxos, BitOil</span>
+        <span>💰 Staking — Meteora, Raydium, Marinade</span>
+        <span>🏦 Crypto Loans — Solend, Marginfi, Nexo</span>
+        <span>📊 Derivatives — Drift, Zeta, Deribit</span>
+        <span>🖼️ NFT — OpenSea, Magic Eden, Decentraland</span>
+        <span>⛓️ RWA — RealtyToken, Paxos, BitOil</span>
+        <span>💰 Staking — Meteora, Raydium, Marinade</span>
+        <span>🏦 Crypto Loans — Solend, Marginfi, Nexo</span>
+        <span>📊 Derivatives — Drift, Zeta, Deribit</span>
+        <span>🖼️ NFT — OpenSea, Magic Eden, Decentraland</span>
+    </div>
+</div>
+
+<header>
+    <div class="container header-inner">
+        <div class="logo-wrap">
+            <img src="mc-logo-primary.png" alt="MasterCard" />
+            <span>MasterCard</span>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Home</a>
+            <a href="page2.html" data-i18n="nav_finance">Finance</a>
+            <a href="page3.html" class="active" data-i18n="nav_crypto">Crypto</a>
+            <a href="page4.html" data-i18n="nav_exchange">Exchange</a>
+            <a href="page5.html" data-i18n="nav_insurance">Insurance</a>
+            <a href="page6.html" data-i18n="nav_business">Business</a>
+            <a href="page7.html" data-i18n="nav_travel">Travel</a>
+            <a href="page8.html" data-i18n="nav_cards">Cards</a>
+            <a href="index.html#buy" class="btn-header" data-i18n="nav_buy">Buy MasterCard</a>
+        </nav>
+    </div>
+</header>
+
+<section class="page-hero">
+    <div class="container">
+        <div class="badge" data-i18n="p3_badge">⛓️ 100+ Crypto Operations</div>
+        <h1><span data-i18n="p3_title">Crypto</span> <span data-i18n="p3_title2">Operations</span></h1>
+        <p data-i18n="p3_desc">RWA, tokenization, staking, crypto loans, derivatives, futures and more than 100 products through MasterCard.</p>
+        <div style="margin-top:16px;">
+            <a href="https://www.mastercard.com/global/en.html" target="_blank" class="btn-secondary" data-i18n="hero_btn_mastercard" style="display:inline-block;">🌐 MasterCard Global</a>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="calculator-section fade-in">
+        <h3 data-i18n="p3_calc_title">⚡ Staking Calculator (APY 18%)</h3>
+        <div class="calc-row">
+            <label data-i18n="p3_calc_amount">MasterCard Amount ($)<input type="number" id="stakeAmount" value="1000" /></label>
+            <label data-i18n="p3_calc_term">Period (months)<input type="number" id="stakeMonths" value="12" /></label>
+            <button class="btn-primary" onclick="calcStake()" data-i18n="p3_calc_btn">Calculate</button>
+        </div>
+        <div class="calc-result" id="stakeResult">Final amount: $1,180.00 | Profit: $180.00</div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="section-title fade-in">
+        <h2><span data-i18n="p3_sec_title">All</span> <span style="color:#eb001b;" data-i18n="p3_sec_title2">Crypto Products</span></h2>
+        <p data-i18n="p3_sec_desc">More than 100 tools for crypto and digital assets.</p>
+    </div>
+    <div class="cards-grid">
+        <!-- RWA -->
+        <div class="card fade-in"><span class="icon">🏠</span><h4 data-i18n="p3_rwa1">Real Estate Tokenization</h4><p data-i18n="p3_rwa1_desc">Fractional property ownership</p><span class="tag">RWA</span><a href="https://www.realtytoken.com" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🥇</span><h4 data-i18n="p3_rwa2">Gold Tokenization</h4><p data-i18n="p3_rwa2_desc">Digital gold</p><span class="tag">RWA</span><a href="https://www.paxos.com/gold/" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🛢️</span><h4 data-i18n="p3_rwa3">Oil Tokenization</h4><p data-i18n="p3_rwa3_desc">Digital barrels</p><span class="tag">RWA</span><a href="https://www.bitoil.io" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🌾</span><h4 data-i18n="p3_rwa4">Grain Tokenization</h4><p data-i18n="p3_rwa4_desc">Digital tons</p><span class="tag">RWA</span><a href="https://www.agrotoken.com" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">💎</span><h4 data-i18n="p3_rwa5">Diamond Tokenization</h4><p data-i18n="p3_rwa5_desc">Digital gems</p><span class="tag">RWA</span><a href="https://www.icecap.com" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🌳</span><h4 data-i18n="p3_rwa6">Forest Tokenization</h4><p data-i18n="p3_rwa6_desc">Digital hectares</p><span class="tag">RWA</span><a href="https://www.landcarbon.com" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🏭</span><h4 data-i18n="p3_rwa7">Factory Tokenization</h4><p data-i18n="p3_rwa7_desc">Industrial assets</p><span class="tag">RWA</span><a href="https://www.assetdivider.com" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🎨</span><h4 data-i18n="p3_rwa8">Art Tokenization</h4><p data-i18n="p3_rwa8_desc">Paintings, sculptures</p><span class="tag">RWA</span><a href="https://www.maecenas.co" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">📜</span><h4 data-i18n="p3_rwa9">IP Tokenization</h4><p data-i18n="p3_rwa9_desc">Intellectual property</p><span class="tag">RWA</span><a href="https://www.ipwe.com" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+
+        <!-- STAKING -->
+        <div class="card fade-in"><span class="icon">💰</span><h4 data-i18n="p3_stake1">MasterCard Staking</h4><p data-i18n="p3_stake1_desc">18% APY</p><span class="tag" data-i18n="p3_tag_stake">Staking</span><a href="https://www.meteora.ag" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🌾</span><h4 data-i18n="p3_stake2">Yield Farming</h4><p data-i18n="p3_stake2_desc">With LP tokens</p><span class="tag" data-i18n="p3_tag_stake">Staking</span><a href="https://www.raydium.io/farms" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">📈</span><h4 data-i18n="p3_stake3">Token Locking</h4><p data-i18n="p3_stake3_desc">Lock for period</p><span class="tag" data-i18n="p3_tag_stake">Staking</span><a href="https://www.locker.xyz" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🔄</span><h4 data-i18n="p3_stake4">Re-staking</h4><p data-i18n="p3_stake4_desc">Re-lock rewards</p><span class="tag" data-i18n="p3_tag_stake">Staking</span><a href="https://www.jito.network" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🏦</span><h4 data-i18n="p3_stake5">Pool Staking</h4><p data-i18n="p3_stake5_desc">Collective staking</p><span class="tag" data-i18n="p3_tag_stake">Staking</span><a href="https://www.stake.solana.com" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">⚡</span><h4 data-i18n="p3_stake6">Liquid Staking</h4><p data-i18n="p3_stake6_desc">Boosted APY</p><span class="tag" data-i18n="p3_tag_stake">Staking</span><a href="https://www.marinade.finance" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🧊</span><h4 data-i18n="p3_stake7">Cold Staking</h4><p data-i18n="p3_stake7_desc">Offline wallet</p><span class="tag" data-i18n="p3_tag_stake">Staking</span><a href="https://www.ledger.com" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🔥</span><h4 data-i18n="p3_stake8">Hot Staking</h4><p data-i18n="p3_stake8_desc">Online wallet</p><span class="tag" data-i18n="p3_tag_stake">Staking</span><a href="https://phantom.app" class="link" target="_blank" data-i18n="p3_link_start">Start →</a></div>
+
+        <!-- CRYPTO LOANS -->
+        <div class="card fade-in"><span class="icon">🏦</span><h4 data-i18n="p3_loan1">BTC-Backed Loan</h4><p data-i18n="p3_loan1_desc">Up to 70% LTV</p><span class="tag" data-i18n="p3_tag_loan">Loan</span><a href="https://www.solend.fi" class="link" target="_blank" data-i18n="p3_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🪙</span><h4 data-i18n="p3_loan2">ETH-Backed Loan</h4><p data-i18n="p3_loan2_desc">Up to 60% LTV</p><span class="tag" data-i18n="p3_tag_loan">Loan</span><a href="https://www.marginfi.com" class="link" target="_blank" data-i18n="p3_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">💎</span><h4 data-i18n="p3_loan3">Stablecoin Loan</h4><p data-i18n="p3_loan3_desc">USDC, USDT</p><span class="tag" data-i18n="p3_tag_loan">Loan</span><a href="https://www.nexo.com" class="link" target="_blank" data-i18n="p3_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🌐</span><h4 data-i18n="p3_loan4">RWA Token Loan</h4><p data-i18n="p3_loan4_desc">Gold, oil, real estate</p><span class="tag" data-i18n="p3_tag_loan">Loan</span><a href="https://www.centrifuge.io" class="link" target="_blank" data-i18n="p3_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">📊</span><h4 data-i18n="p3_loan5">Portfolio Loan</h4><p data-i18n="p3_loan5_desc">Asset basket</p><span class="tag" data-i18n="p3_tag_loan">Loan</span><a href="https://www.portfolio-loan.com" class="link" target="_blank" data-i18n="p3_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">⚡</span><h4 data-i18n="p3_loan6">Flash Loan</h4><p data-i18n="p3_loan6_desc">No collateral, 1 block</p><span class="tag" data-i18n="p3_tag_loan">Loan</span><a href="https://www.solend.fi/flash-loans" class="link" target="_blank" data-i18n="p3_link_apply">Apply →</a></div>
+
+        <!-- DERIVATIVES -->
+        <div class="card fade-in"><span class="icon">📊</span><h4 data-i18n="p3_der1">BTC Futures</h4><p data-i18n="p3_der1_desc">Square contracts</p><span class="tag" data-i18n="p3_tag_deriv">Derivative</span><a href="https://www.drift.trade" class="link" target="_blank" data-i18n="p3_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">📈</span><h4 data-i18n="p3_der2">MasterCard Futures</h4><p data-i18n="p3_der2_desc">Hedging</p><span class="tag" data-i18n="p3_tag_deriv">Derivative</span><a href="https://www.drift.trade" class="link" target="_blank" data-i18n="p3_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🔄</span><h4 data-i18n="p3_der3">Perpetual Futures</h4><p data-i18n="p3_der3_desc">Perpetual</p><span class="tag" data-i18n="p3_tag_deriv">Derivative</span><a href="https://www.zetamarkets.com" class="link" target="_blank" data-i18n="p3_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🔮</span><h4 data-i18n="p3_der4">Options CALL/PUT</h4><p data-i18n="p3_der4_desc">On tokens</p><span class="tag" data-i18n="p3_tag_deriv">Derivative</span><a href="https://www.deribit.com" class="link" target="_blank" data-i18n="p3_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🌐</span><h4 data-i18n="p3_der5">Index Futures</h4><p data-i18n="p3_der5_desc">Token basket</p><span class="tag" data-i18n="p3_tag_deriv">Derivative</span><a href="https://www.indexfutures.com" class="link" target="_blank" data-i18n="p3_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">⚡</span><h4 data-i18n="p3_der6">Perpetual Options</h4><p data-i18n="p3_der6_desc">No expiry</p><span class="tag" data-i18n="p3_tag_deriv">Derivative</span><a href="https://www.perpetualoptions.io" class="link" target="_blank" data-i18n="p3_link_trade">Trade →</a></div>
+
+        <!-- NFT -->
+        <div class="card fade-in"><span class="icon">🖼️</span><h4 data-i18n="p3_nft1">NFT Collections</h4><p data-i18n="p3_nft1_desc">Digital art</p><span class="tag">NFT</span><a href="https://opensea.io" class="link" target="_blank" data-i18n="p3_link_buy">Buy →</a></div>
+        <div class="card fade-in"><span class="icon">🎮</span><h4 data-i18n="p3_nft2">GameFi NFT</h4><p data-i18n="p3_nft2_desc">Gaming assets</p><span class="tag">NFT</span><a href="https://magiceden.io" class="link" target="_blank" data-i18n="p3_link_buy">Buy →</a></div>
+        <div class="card fade-in"><span class="icon">🏠</span><h4 data-i18n="p3_nft3">Metaverse NFT</h4><p data-i18n="p3_nft3_desc">Virtual land</p><span class="tag">NFT</span><a href="https://decentraland.org" class="link" target="_blank" data-i18n="p3_link_buy">Buy →</a></div>
+        <div class="card fade-in"><span class="icon">🎫</span><h4 data-i18n="p3_nft4">Event NFT</h4><p data-i18n="p3_nft4_desc">Tickets</p><span class="tag">NFT</span><a href="https://www.ticketmaster.com" class="link" target="_blank" data-i18n="p3_link_buy">Buy →</a></div>
+        <div class="card fade-in"><span class="icon">🎵</span><h4 data-i18n="p3_nft5">Music NFT</h4><p data-i18n="p3_nft5_desc">Albums, tracks</p><span class="tag">NFT</span><a href="https://sound.xyz" class="link" target="_blank" data-i18n="p3_link_buy">Buy →</a></div>
+        <div class="card fade-in"><span class="icon">🌐</span><h4 data-i18n="p3_nft6">NFT Domains</h4><p data-i18n="p3_nft6_desc">Digital names</p><span class="tag">NFT</span><a href="https://ens.domains" class="link" target="_blank" data-i18n="p3_link_buy">Buy →</a></div>
+
+        <!-- TOOLS -->
+        <div class="card fade-in"><span class="icon">🔄</span><h4 data-i18n="p3_tool1">Token Swap</h4><p data-i18n="p3_tool1_desc">50+ currencies</p><span class="tag" data-i18n="p3_tag_tool">Tool</span><a href="https://jup.ag" class="link" target="_blank" data-i18n="p3_link_use">Use →</a></div>
+        <div class="card fade-in"><span class="icon">🧾</span><h4 data-i18n="p3_tool2">On-chain Analytics</h4><p data-i18n="p3_tool2_desc">Transaction tracking</p><span class="tag" data-i18n="p3_tag_tool">Tool</span><a href="https://solscan.io" class="link" target="_blank" data-i18n="p3_link_use">Use →</a></div>
+        <div class="card fade-in"><span class="icon">🛡️</span><h4 data-i18n="p3_tool3">Anti-fraud</h4><p data-i18n="p3_tool3_desc">Token protection</p><span class="tag" data-i18n="p3_tag_tool">Tool</span><a href="https://www.halborn.com" class="link" target="_blank" data-i18n="p3_link_use">Use →</a></div>
+        <div class="card fade-in"><span class="icon">📋</span><h4 data-i18n="p3_tool4">Smart Contracts</h4><p data-i18n="p3_tool4_desc">Create and deploy</p><span class="tag" data-i18n="p3_tag_tool">Tool</span><a href="https://ethereum.org/smart-contracts" class="link" target="_blank" data-i18n="p3_link_use">Use →</a></div>
+        <div class="card fade-in"><span class="icon">🔐</span><h4 data-i18n="p3_tool5">Multi-sig</h4><p data-i18n="p3_tool5_desc">Security</p><span class="tag" data-i18n="p3_tag_tool">Tool</span><a href="https://safe.global" class="link" target="_blank" data-i18n="p3_link_use">Use →</a></div>
+        <div class="card fade-in"><span class="icon">🌐</span><h4 data-i18n="p3_tool6">Cross-chain Bridges</h4><p data-i18n="p3_tool6_desc">Transfer between networks</p><span class="tag" data-i18n="p3_tag_tool">Tool</span><a href="https://www.wormhole.com" class="link" target="_blank" data-i18n="p3_link_use">Use →</a></div>
+        <div class="card fade-in"><span class="icon">📊</span><h4 data-i18n="p3_tool7">AI Analytics</h4><p data-i18n="p3_tool7_desc">Price forecasts</p><span class="tag" data-i18n="p3_tag_tool">Tool</span><a href="https://www.birdeye.so" class="link" target="_blank" data-i18n="p3_link_use">Use →</a></div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="mastercard-global-banner">
+        <div>
+            <h3 data-i18n="mastercard_banner_title">🌐 Official <span style="color:#eb001b;">MasterCard Global</span></h3>
+            <p data-i18n="mastercard_banner_desc">Powering economies and empowering people. Innovative solutions for a safer, smarter, digital economy.</p>
+        </div>
+        <a href="https://www.mastercard.com/global/en.html" target="_blank" class="btn-primary" style="flex-shrink:0;" data-i18n="mastercard_banner_btn">Visit mastercard.com →</a>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-inner">
+            <div class="logo-wrap"><img src="mc-logo-primary.png" alt="MasterCard" style="height:32px;" /><span style="font-size:16px;background:linear-gradient(135deg,#eb001b,#f79e1b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">MasterCard</span></div>
+            <div class="footer-socials">
+                <a href="https://www.mastercard.com/global/en.html" target="_blank">🌐 MasterCard Global</a>
+                <a href="https://twitter.com/mastercard" target="_blank">🐦 X</a>
+                <a href="https://t.me/mastercard_official" target="_blank">💬 Telegram</a>
+            </div>
+        </div>
+        <div class="footer-disclaimer" data-i18n="footer_disclaimer">⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR).</div>
+    </div>
+</footer>
+
+<script>
+    function calcStake() {
+        const amount = parseFloat(document.getElementById('stakeAmount').value);
+        const months = parseFloat(document.getElementById('stakeMonths').value);
+        const rate = 0.18;
+        if (!amount || !months) { document.getElementById('stakeResult').textContent = 'Fill in all fields'; return; }
+        const total = amount * Math.pow(1 + rate / 12, months);
+        document.getElementById('stakeResult').textContent = `Final amount: $${total.toFixed(2)} | Profit: $${(total - amount).toFixed(2)}`;
+    }
+    calcStake();
+
+    const translations = {
+        en: {
+            nav_home: "Home", nav_finance: "Finance", nav_crypto: "Crypto", nav_exchange: "Exchange",
+            nav_insurance: "Insurance", nav_business: "Business", nav_travel: "Travel", nav_cards: "Cards", nav_buy: "Buy MasterCard",
+            hero_btn_mastercard: "🌐 MasterCard Global",
+            mastercard_banner_title: "🌐 Official MasterCard Global",
+            mastercard_banner_desc: "Powering economies and empowering people. Innovative solutions for a safer, smarter, digital economy.",
+            mastercard_banner_btn: "Visit mastercard.com →",
+            footer_disclaimer: "⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR).",
+            p3_badge: "⛓️ 100+ Crypto Operations",
+            p3_title: "Crypto", p3_title2: "Operations",
+            p3_desc: "RWA, tokenization, staking, crypto loans, derivatives, futures and more than 100 products through MasterCard.",
+            p3_calc_title: "⚡ Staking Calculator (APY 18%)",
+            p3_calc_amount: "MasterCard Amount ($)", p3_calc_term: "Period (months)", p3_calc_btn: "Calculate",
+            p3_sec_title: "All", p3_sec_title2: "Crypto Products", p3_sec_desc: "More than 100 tools for crypto and digital assets.",
+            p3_link_start: "Start →", p3_link_apply: "Apply →", p3_link_trade: "Trade →", p3_link_buy: "Buy →", p3_link_use: "Use →",
+            p3_tag_stake: "Staking", p3_tag_loan: "Loan", p3_tag_deriv: "Derivative", p3_tag_tool: "Tool",
+            p3_rwa1: "Real Estate Tokenization", p3_rwa1_desc: "Fractional property ownership",
+            p3_rwa2: "Gold Tokenization", p3_rwa2_desc: "Digital gold",
+            p3_rwa3: "Oil Tokenization", p3_rwa3_desc: "Digital barrels",
+            p3_rwa4: "Grain Tokenization", p3_rwa4_desc: "Digital tons",
+            p3_rwa5: "Diamond Tokenization", p3_rwa5_desc: "Digital gems",
+            p3_rwa6: "Forest Tokenization", p3_rwa6_desc: "Digital hectares",
+            p3_rwa7: "Factory Tokenization", p3_rwa7_desc: "Industrial assets",
+            p3_rwa8: "Art Tokenization", p3_rwa8_desc: "Paintings, sculptures",
+            p3_rwa9: "IP Tokenization", p3_rwa9_desc: "Intellectual property",
+            p3_stake1: "MasterCard Staking", p3_stake1_desc: "18% APY",
+            p3_stake2: "Yield Farming", p3_stake2_desc: "With LP tokens",
+            p3_stake3: "Token Locking", p3_stake3_desc: "Lock for period",
+            p3_stake4: "Re-staking", p3_stake4_desc: "Re-lock rewards",
+            p3_stake5: "Pool Staking", p3_stake5_desc: "Collective staking",
+            p3_stake6: "Liquid Staking", p3_stake6_desc: "Boosted APY",
+            p3_stake7: "Cold Staking", p3_stake7_desc: "Offline wallet",
+            p3_stake8: "Hot Staking", p3_stake8_desc: "Online wallet",
+            p3_loan1: "BTC-Backed Loan", p3_loan1_desc: "Up to 70% LTV",
+            p3_loan2: "ETH-Backed Loan", p3_loan2_desc: "Up to 60% LTV",
+            p3_loan3: "Stablecoin Loan", p3_loan3_desc: "USDC, USDT",
+            p3_loan4: "RWA Token Loan", p3_loan4_desc: "Gold, oil, real estate",
+            p3_loan5: "Portfolio Loan", p3_loan5_desc: "Asset basket",
+            p3_loan6: "Flash Loan", p3_loan6_desc: "No collateral, 1 block",
+            p3_der1: "BTC Futures", p3_der1_desc: "Square contracts",
+            p3_der2: "MasterCard Futures", p3_der2_desc: "Hedging",
+            p3_der3: "Perpetual Futures", p3_der3_desc: "Perpetual",
+            p3_der4: "Options CALL/PUT", p3_der4_desc: "On tokens",
+            p3_der5: "Index Futures", p3_der5_desc: "Token basket",
+            p3_der6: "Perpetual Options", p3_der6_desc: "No expiry",
+            p3_nft1: "NFT Collections", p3_nft1_desc: "Digital art",
+            p3_nft2: "GameFi NFT", p3_nft2_desc: "Gaming assets",
+            p3_nft3: "Metaverse NFT", p3_nft3_desc: "Virtual land",
+            p3_nft4: "Event NFT", p3_nft4_desc: "Tickets",
+            p3_nft5: "Music NFT", p3_nft5_desc: "Albums, tracks",
+            p3_nft6: "NFT Domains", p3_nft6_desc: "Digital names",
+            p3_tool1: "Token Swap", p3_tool1_desc: "50+ currencies",
+            p3_tool2: "On-chain Analytics", p3_tool2_desc: "Transaction tracking",
+            p3_tool3: "Anti-fraud", p3_tool3_desc: "Token protection",
+            p3_tool4: "Smart Contracts", p3_tool4_desc: "Create and deploy",
+            p3_tool5: "Multi-sig", p3_tool5_desc: "Security",
+            p3_tool6: "Cross-chain Bridges", p3_tool6_desc: "Transfer between networks",
+            p3_tool7: "AI Analytics", p3_tool7_desc: "Price forecasts"
+        },
+        ru: {
+            nav_home: "Главная", nav_finance: "Финансы", nav_crypto: "Крипто", nav_exchange: "Биржа",
+            nav_insurance: "Страхование", nav_business: "Бизнес", nav_travel: "Туризм", nav_cards: "Карты", nav_buy: "Купить MasterCard",
+            hero_btn_mastercard: "🌐 MasterCard Global",
+            mastercard_banner_title: "🌐 Официальный сайт MasterCard Global",
+            mastercard_banner_desc: "Расширение экономических возможностей и расширение прав и возможностей людей. Инновационные решения для более безопасной, умной и цифровой экономики.",
+            mastercard_banner_btn: "Перейти на mastercard.com →",
+            footer_disclaimer: "⚠️ Данный проект является сообщественным и не аффилирован с Mastercard Incorporated. Криптовалютные инвестиции сопряжены с высоким риском. Всегда проводите собственное исследование (DYOR).",
+            p3_badge: "⛓️ 100+ крипто-операций",
+            p3_title: "Крипто", p3_title2: "операции",
+            p3_desc: "RWA, токенизация, стейкинг, криптокредиты, деривативы, фьючерсы и более 100 продуктов через MasterCard.",
+            p3_calc_title: "⚡ Калькулятор стейкинга (APY 18%)",
+            p3_calc_amount: "Сумма MasterCard ($)", p3_calc_term: "Период (мес)", p3_calc_btn: "Рассчитать",
+            p3_sec_title: "Все", p3_sec_title2: "крипто-продукты", p3_sec_desc: "Более 100 инструментов для работы с криптовалютами и цифровыми активами.",
+            p3_link_start: "Начать →", p3_link_apply: "Оформить →", p3_link_trade: "Торговать →", p3_link_buy: "Купить →", p3_link_use: "Использовать →",
+            p3_tag_stake: "Стейкинг", p3_tag_loan: "Кредит", p3_tag_deriv: "Дериватив", p3_tag_tool: "Инструмент",
+            p3_rwa1: "Токенизация недвижимости", p3_rwa1_desc: "Дробные доли в объектах",
+            p3_rwa2: "Токенизация золота", p3_rwa2_desc: "Цифровое золото",
+            p3_rwa3: "Токенизация нефти", p3_rwa3_desc: "Цифровые баррели",
+            p3_rwa4: "Токенизация зерна", p3_rwa4_desc: "Цифровые тонны",
+            p3_rwa5: "Токенизация алмазов", p3_rwa5_desc: "Цифровые драгкамни",
+            p3_rwa6: "Токенизация леса", p3_rwa6_desc: "Цифровые гектары",
+            p3_rwa7: "Токенизация заводов", p3_rwa7_desc: "Промышленные активы",
+            p3_rwa8: "Токенизация искусства", p3_rwa8_desc: "Картины, скульптуры",
+            p3_rwa9: "Токенизация прав", p3_rwa9_desc: "Интеллектуальная собственность",
+            p3_stake1: "Стейкинг MasterCard", p3_stake1_desc: "18% APY",
+            p3_stake2: "Yield Farming", p3_stake2_desc: "Фарминг с LP-токенами",
+            p3_stake3: "Локинг токенов", p3_stake3_desc: "Блокировка на срок",
+            p3_stake4: "Ре-стейкинг", p3_stake4_desc: "Повторная блокировка",
+            p3_stake5: "Стейкинг в пулах", p3_stake5_desc: "Коллективный стейкинг",
+            p3_stake6: "Лид-стейкинг", p3_stake6_desc: "Повышенная APY",
+            p3_stake7: "Холодный стейкинг", p3_stake7_desc: "В офлайн-кошельке",
+            p3_stake8: "Горячий стейкинг", p3_stake8_desc: "В онлайн-кошельке",
+            p3_loan1: "Кредит под залог BTC", p3_loan1_desc: "До 70% от стоимости",
+            p3_loan2: "Кредит под ETH", p3_loan2_desc: "До 60% LTV",
+            p3_loan3: "Кредит под стейблкоины", p3_loan3_desc: "USDC, USDT",
+            p3_loan4: "Кредит под токены RWA", p3_loan4_desc: "Золото, нефть, недвижимость",
+            p3_loan5: "Кредит под портфель", p3_loan5_desc: "Корзина активов",
+            p3_loan6: "Флеш-кредит", p3_loan6_desc: "Без залога на 1 блок",
+            p3_der1: "Фьючерсы на BTC", p3_der1_desc: "Квадратные контракты",
+            p3_der2: "Фьючерсы на MasterCard", p3_der2_desc: "Хеджирование",
+            p3_der3: "Бессрочные фьючерсы", p3_der3_desc: "Perpetual",
+            p3_der4: "Опционы CALL/PUT", p3_der4_desc: "На токены",
+            p3_der5: "Индексные фьючерсы", p3_der5_desc: "На корзину токенов",
+            p3_der6: "Вечные опционы", p3_der6_desc: "Без экспирации",
+            p3_nft1: "NFT-коллекции", p3_nft1_desc: "Цифровое искусство",
+            p3_nft2: "GameFi NFT", p3_nft2_desc: "Игровые активы",
+            p3_nft3: "NFT недвижимости", p3_nft3_desc: "Метавселенные",
+            p3_nft4: "NFT-билеты", p3_nft4_desc: "На мероприятия",
+            p3_nft5: "NFT-музыка", p3_nft5_desc: "Альбомы, треки",
+            p3_nft6: "NFT-домены", p3_nft6_desc: "Цифровые имена",
+            p3_tool1: "Своп токенов", p3_tool1_desc: "Обмен 50+ валют",
+            p3_tool2: "Ончейн-аналитика", p3_tool2_desc: "Отслеживание транзакций",
+            p3_tool3: "Анти-мошенничество", p3_tool3_desc: "Защита токенов",
+            p3_tool4: "Смарт-контракты", p3_tool4_desc: "Создание и деплой",
+            p3_tool5: "Мультиподпись", p3_tool5_desc: "Безопасность",
+            p3_tool6: "Кросс-чейн мосты", p3_tool6_desc: "Перевод между сетями",
+            p3_tool7: "AI-аналитика", p3_tool7_desc: "Прогнозы цен"
+        },
+        es: {}, fr: {}, zh: {}, ja: {}, ar: {}, hi: {}
+    };
+
+    let currentLang = localStorage.getItem('mastercardLang') || 'en';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('mastercardLang', lang);
+        document.querySelectorAll('#languageSwitcher a').forEach(el => {
+            el.classList.toggle('active', el.dataset.lang === lang);
+        });
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            const translation = translations[lang]?.[key];
+            if (translation !== undefined) el.textContent = translation;
+        });
+        document.documentElement.lang = lang;
+    }
+
+    document.querySelectorAll('#languageSwitcher a').forEach(el => {
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            setLanguage(this.dataset.lang);
+        });
+    });
+
+    const faders = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    faders.forEach(el => observer.observe(el));
+
+    setLanguage(currentLang);
+</script>
+</body>
+</html>
