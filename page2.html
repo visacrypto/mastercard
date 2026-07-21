@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MasterCard – Traditional Finance | Loans, Deposits, Guarantees</title>
+    <link rel="icon" href="mc-favicon.png" type="image/png" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0a0a1a; color: #fff; line-height: 1.6; overflow-x: hidden; }
+        a { color: #eb001b; text-decoration: none; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+        .lang-bar {
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 8px 0;
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        .lang-bar .container { display: flex; justify-content: flex-end; gap: 12px; flex-wrap: wrap; }
+        .lang-bar a { color: #7a84a3; transition: color 0.3s, background 0.3s; font-weight: 500; padding: 4px 12px; border-radius: 4px; cursor: pointer; }
+        .lang-bar a:hover { color: #ffffff; background: rgba(255,255,255,0.06); }
+        .lang-bar a.active { color: #eb001b; background: rgba(235,0,27,0.12); }
+
+        .bg-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: radial-gradient(ellipse at 20% 50%, #1a1a4e, #0a0a1a 70%);
+            overflow: hidden;
+        }
+        .bg-canvas::before {
+            content: ''; position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+            background: radial-gradient(circle at 30% 40%, rgba(235,0,27,0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(247,158,27,0.06) 0%, transparent 50%);
+            animation: bgPulse 12s ease-in-out infinite alternate;
+        }
+        @keyframes bgPulse { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-5%,-3%) scale(1.1); } }
+        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; animation: orbFloat 18s infinite alternate ease-in-out; }
+        .orb-1 { width: 500px; height: 500px; background: #eb001b; top: -10%; left: -5%; }
+        .orb-2 { width: 400px; height: 400px; background: #f79e1b; bottom: -10%; right: -5%; animation-delay: -6s; }
+        .orb-3 { width: 300px; height: 300px; background: #9945ff; top: 50%; left: 50%; animation-delay: -12s; }
+        .orb-4 { width: 350px; height: 350px; background: #ff6b6b; top: 20%; right: 10%; animation-delay: -4s; }
+        .orb-5 { width: 250px; height: 250px; background: #ffd93d; bottom: 20%; left: 10%; animation-delay: -9s; }
+        @keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(60px,-40px) scale(1.2); } }
+
+        .ticker-wrap {
+            position: relative; z-index: 5; width: 100%; overflow: hidden;
+            background: rgba(255,255,255,0.03);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 10px 0;
+            white-space: nowrap;
+        }
+        .ticker {
+            display: inline-block;
+            animation: tickerScroll 30s linear infinite;
+            font-size: 14px;
+            font-weight: 500;
+            color: #b0b8d1;
+        }
+        .ticker span { margin: 0 40px; color: #eb001b; }
+        .ticker .highlight { color: #f79e1b; }
+        @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        header {
+            position: relative; z-index: 10; padding: 18px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            background: rgba(10,10,26,0.6);
+        }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .logo-wrap { display: flex; align-items: center; gap: 12px; }
+        .logo-wrap img { height: 44px; width: auto; }
+        .logo-wrap span {
+            font-weight: 700; font-size: 22px; letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .nav-links a {
+            font-size: 13px; font-weight: 500; color: #b0b8d1; transition: color 0.3s, background 0.3s;
+            padding: 6px 12px; border-radius: 8px;
+        }
+        .nav-links a:hover { color: #ffffff; background: rgba(255,255,255,0.05); }
+        .nav-links a.active { color: #eb001b; background: rgba(235,0,27,0.1); }
+        .btn-header {
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+            padding: 10px 28px; border-radius: 40px; font-weight: 600; font-size: 14px;
+            color: #fff !important; transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(235,0,27,0.3);
+        }
+        .btn-header:hover { transform: scale(1.04); box-shadow: 0 6px 30px rgba(235,0,27,0.5); }
+
+        .page-hero { position: relative; z-index: 5; padding: 40px 0 30px; text-align: center; }
+        .page-hero h1 { font-size: clamp(32px, 4vw, 48px); font-weight: 700; }
+        .page-hero h1 span { background: linear-gradient(135deg, #eb001b, #f79e1b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .page-hero p { color: #b0b8d1; max-width: 600px; margin: 12px auto 0; }
+
+        .badge {
+            display: inline-block; background: rgba(235,0,27,0.12); color: #eb001b;
+            padding: 4px 18px; border-radius: 40px; font-size: 13px; font-weight: 600;
+            letter-spacing: 0.5px; margin-bottom: 14px; border: 1px solid rgba(235,0,27,0.15);
+        }
+
+        .section-title { text-align: center; margin: 40px 0 32px; }
+        .section-title h2 { font-size: clamp(26px, 3vw, 36px); font-weight: 700; }
+        .section-title p { color: #b0b8d1; }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+            margin: 24px 0;
+            position: relative; z-index: 5;
+        }
+        .card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 20px 18px;
+            transition: transform 0.3s, border-color 0.3s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .card:hover { transform: translateY(-4px); border-color: rgba(235,0,27,0.25); }
+        .card .icon { font-size: 28px; margin-bottom: 8px; display: block; }
+        .card h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .card p { color: #b0b8d1; font-size: 13px; }
+        .card .tag {
+            display: inline-block; background: rgba(235,0,27,0.08); color: #eb001b;
+            padding: 2px 12px; border-radius: 40px; font-size: 11px; font-weight: 600;
+            margin-top: 8px; border: 1px solid rgba(235,0,27,0.08);
+        }
+        .card .link { display: block; margin-top: 10px; font-size: 13px; font-weight: 600; color: #eb001b; }
+        .card .link:hover { text-decoration: underline; }
+
+        .calculator-section {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 32px 28px;
+            margin: 32px 0;
+            position: relative; z-index: 5;
+        }
+        .calculator-section h3 { font-size: 22px; margin-bottom: 16px; }
+        .calc-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; }
+        .calc-row label { font-size: 14px; color: #b0b8d1; display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
+        .calc-row input {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+        }
+        .calc-row input:focus { outline: none; border-color: #eb001b; }
+        .calc-result { margin-top: 16px; font-size: 20px; font-weight: 700; color: #eb001b; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+            padding: 12px 32px; border-radius: 50px; font-weight: 600; font-size: 15px;
+            color: #fff; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 24px rgba(235,0,27,0.35);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(235,0,27,0.5); }
+
+        .mastercard-global-banner {
+            background: linear-gradient(135deg, rgba(26,26,78,0.8), rgba(10,10,26,0.8));
+            border: 1px solid rgba(235,0,27,0.15);
+            border-radius: 20px; padding: 32px 40px; margin: 40px 0;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;
+        }
+        .mastercard-global-banner h3 { font-size: 22px; }
+        .mastercard-global-banner p { color: #b0b8d1; max-width: 500px; }
+
+        .pool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 32px 0;
+            position: relative; z-index: 5;
+        }
+        .pool-card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 24px 20px;
+            transition: transform 0.3s, border-color 0.3s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .pool-card:hover { transform: translateY(-4px); border-color: rgba(235,0,27,0.25); }
+        .pool-card h4 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .pool-card p { color: #b0b8d1; font-size: 14px; margin-bottom: 4px; word-break: break-all; }
+        .pool-card .tag {
+            display: inline-block; background: rgba(235,0,27,0.08); color: #eb001b;
+            padding: 2px 14px; border-radius: 40px; font-size: 12px; font-weight: 600;
+            border: 1px solid rgba(235,0,27,0.08);
+        }
+        .pool-card .link-btn {
+            display: inline-block; margin-top: 12px; padding: 8px 20px;
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+            border-radius: 40px; font-size: 13px; font-weight: 600; color: #fff;
+            transition: transform 0.2s;
+        }
+        .pool-card .link-btn:hover { transform: scale(1.04); }
+
+        footer {
+            position: relative; z-index: 5; padding: 40px 0 24px;
+            border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px;
+        }
+        .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-inner p { color: #5a6380; font-size: 14px; }
+        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials a { color: #5a6380; font-size: 18px; transition: color 0.3s; }
+        .footer-socials a:hover { color: #fff; }
+        .footer-disclaimer { text-align: center; margin-top: 20px; font-size: 12px; color: #3a4360; max-width: 700px; margin-left: auto; margin-right: auto; }
+
+        @media (max-width: 600px) {
+            .nav-links { gap: 8px; }
+            .nav-links a { font-size: 12px; padding: 4px 8px; }
+            .cards-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .calc-row { flex-direction: column; }
+            .mastercard-global-banner { flex-direction: column; text-align: center; }
+            .pool-grid { grid-template-columns: 1fr; }
+            .ticker { font-size: 12px; }
+        }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="lang-bar">
+    <div class="container" id="languageSwitcher">
+        <a data-lang="en" class="active">English</a>
+        <a data-lang="ru">Русский</a>
+        <a data-lang="es">Español</a>
+        <a data-lang="fr">Français</a>
+        <a data-lang="zh">中文</a>
+        <a data-lang="ja">日本語</a>
+        <a data-lang="ar">العربية</a>
+        <a data-lang="hi">हिन्दी</a>
+    </div>
+</div>
+
+<div class="bg-canvas">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+</div>
+
+<div class="ticker-wrap">
+    <div class="ticker">
+        <span>🏦 Loans — NerdWallet</span>
+        <span>💰 Deposits — DepositAccounts</span>
+        <span>🛡️ Guarantees — Trade Finance Global</span>
+        <span>🚛 Leasing — LeaseGuide</span>
+        <span>📄 Factoring — Factoring.org</span>
+        <span>💱 Derivatives — Investopedia</span>
+        <span>🏦 Loans — NerdWallet</span>
+        <span>💰 Deposits — DepositAccounts</span>
+        <span>🛡️ Guarantees — Trade Finance Global</span>
+        <span>🚛 Leasing — LeaseGuide</span>
+        <span>📄 Factoring — Factoring.org</span>
+        <span>💱 Derivatives — Investopedia</span>
+    </div>
+</div>
+
+<header>
+    <div class="container header-inner">
+        <div class="logo-wrap">
+            <img src="mc-logo-primary.png" alt="MasterCard" />
+            <span>MasterCard</span>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Home</a>
+            <a href="page2.html" class="active" data-i18n="nav_finance">Finance</a>
+            <a href="page3.html" data-i18n="nav_crypto">Crypto</a>
+            <a href="page4.html" data-i18n="nav_exchange">Exchange</a>
+            <a href="page5.html" data-i18n="nav_insurance">Insurance</a>
+            <a href="page6.html" data-i18n="nav_business">Business</a>
+            <a href="page7.html" data-i18n="nav_travel">Travel</a>
+            <a href="page8.html" data-i18n="nav_cards">Cards</a>
+            <a href="index.html#buy" class="btn-header" data-i18n="nav_buy">Buy MasterCard</a>
+        </nav>
+    </div>
+</header>
+
+<section class="page-hero">
+    <div class="container">
+        <div class="badge" data-i18n="p2_badge">🏦 100+ Financial Instruments</div>
+        <h1><span data-i18n="p2_title">Interbank</span> <span data-i18n="p2_title2">Finance</span></h1>
+        <p data-i18n="p2_desc">Loans, deposits, bank guarantees, SBLC, letters of credit, leasing, factoring and more than 100 products through MasterCard.</p>
+        <div style="margin-top:16px;">
+            <a href="https://www.mastercard.com/global/en.html" target="_blank" class="btn-secondary" data-i18n="hero_btn_mastercard" style="display:inline-block;">🌐 MasterCard Global</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== POOL INFO ===== -->
+<section class="container" style="position:relative;z-index:5;padding:20px 0;">
+    <div class="section-title fade-in">
+        <span class="badge">💧 Liquidity Pools</span>
+        <h2>Trade <span style="color:#eb001b;">MasterCard</span></h2>
+        <p>Three pools for liquidity and easy buying.</p>
+    </div>
+    <div class="pool-grid">
+        <div class="pool-card fade-in">
+            <h4>🌊 Pool <span style="color:#eb001b;">MasterCard/EURI</span></h4>
+            <p><strong>Pair:</strong> MasterCard / EURI</p>
+            <p><strong>Address:</strong> <span style="font-size:12px;color:#b0b8d1;">4LBo5HKyDxWKDqj1bySktvPqCrafyshqcyuAjnc4qTe8</span></p>
+            <p><strong>Exchange:</strong> Meteora DAMM V2</p>
+            <span class="tag">🔗 Liquidity</span>
+            <a href="https://www.geckoterminal.com/solana/pools/4LBo5HKyDxWKDqj1bySktvPqCrafyshqcyuAjnc4qTe8" target="_blank" class="link-btn">View Pool →</a>
+        </div>
+        <div class="pool-card fade-in">
+            <h4>🛒 Buy Pool <span style="color:#ffd93d;">MasterCard/USDT</span></h4>
+            <p><strong>Pair:</strong> MasterCard / USDT</p>
+            <p><strong>Address:</strong> <span style="font-size:12px;color:#b0b8d1;">5svM5R1h2nFx9YkwRNAdSXaoieDxC4ebZnzAS5yZdiFy</span></p>
+            <p><strong>Exchange:</strong> Meteora DAMM V2</p>
+            <span class="tag">🛒 Buy MasterCard</span>
+            <a href="https://www.geckoterminal.com/solana/pools/5svM5R1h2nFx9YkwRNAdSXaoieDxC4ebZnzAS5yZdiFy" target="_blank" class="link-btn">Buy MasterCard →</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CALCULATOR 1 ===== -->
+<div class="container">
+    <div class="calculator-section fade-in">
+        <h3 data-i18n="p2_calc1_title">📊 Loan Calculator (Annuity)</h3>
+        <div class="calc-row">
+            <label data-i18n="p2_calc1_amount">Loan Amount ($)<input type="number" id="loanAmount" value="10000" /></label>
+            <label data-i18n="p2_calc1_rate">Annual Rate (%)<input type="number" id="loanRate" value="12" step="0.1" /></label>
+            <label data-i18n="p2_calc1_term">Term (months)<input type="number" id="loanTerm" value="24" /></label>
+            <button class="btn-primary" onclick="calcLoan()" data-i18n="p2_calc1_btn">Calculate</button>
+        </div>
+        <div class="calc-result" id="loanResult">Monthly payment: $470.73</div>
+    </div>
+</div>
+
+<!-- ===== 100+ FEATURES ===== -->
+<div class="container">
+    <div class="section-title fade-in">
+        <h2><span data-i18n="p2_sec_title">All</span> <span style="color:#eb001b;" data-i18n="p2_sec_title2">Financial Products</span></h2>
+        <p data-i18n="p2_sec_desc">More than 100 tools for individuals and businesses.</p>
+    </div>
+    <div class="cards-grid">
+        <!-- LOANS -->
+        <div class="card fade-in"><span class="icon">🏦</span><h4 data-i18n="p2_loan1">Consumer Loan</h4><p data-i18n="p2_loan1_desc">Up to $1M without collateral</p><span class="tag" data-i18n="p2_tag_loan">Loan</span><a href="https://www.nerdwallet.com/loans/personal-loans" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🏠</span><h4 data-i18n="p2_loan2">Mortgage</h4><p data-i18n="p2_loan2_desc">For housing up to 30 years</p><span class="tag" data-i18n="p2_tag_loan">Loan</span><a href="https://www.nerdwallet.com/mortgages" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🚗</span><h4 data-i18n="p2_loan3">Auto Loan</h4><p data-i18n="p2_loan3_desc">For new or used cars</p><span class="tag" data-i18n="p2_tag_loan">Loan</span><a href="https://www.carsdirect.com/auto-loans" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🎓</span><h4 data-i18n="p2_loan4">Education Loan</h4><p data-i18n="p2_loan4_desc">With deferment</p><span class="tag" data-i18n="p2_tag_loan">Loan</span><a href="https://www.nerdwallet.com/loans/student-loans" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🩺</span><h4 data-i18n="p2_loan5">Medical Loan</h4><p data-i18n="p2_loan5_desc">For healthcare services</p><span class="tag" data-i18n="p2_tag_loan">Loan</span><a href="https://www.nerdwallet.com/loans/personal-loans" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🏪</span><h4 data-i18n="p2_loan6">Retail Loan</h4><p data-i18n="p2_loan6_desc">Installment purchase</p><span class="tag" data-i18n="p2_tag_loan">Loan</span><a href="https://www.affirm.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🌾</span><h4 data-i18n="p2_loan7">Agricultural Loan</h4><p data-i18n="p2_loan7_desc">For farming equipment</p><span class="tag" data-i18n="p2_tag_loan">Loan</span><a href="https://www.farmermac.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🏭</span><h4 data-i18n="p2_loan8">Investment Loan</h4><p data-i18n="p2_loan8_desc">For business and startups</p><span class="tag" data-i18n="p2_tag_loan">Loan</span><a href="https://www.fundera.com/business-loans" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p2_loan9">MasterCard Credit Card</h4><p data-i18n="p2_loan9_desc">Grace period up to 100 days</p><span class="tag" data-i18n="p2_tag_loan">Loan</span><a href="https://www.creditcards.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">⚡</span><h4 data-i18n="p2_loan10">Credit Line</h4><p data-i18n="p2_loan10_desc">Overdraft facility</p><span class="tag" data-i18n="p2_tag_loan">Loan</span><a href="https://www.nerdwallet.com/loans/personal-loans" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">📈</span><h4 data-i18n="p2_loan11">Securities-Backed Loan</h4><p data-i18n="p2_loan11_desc">Against securities</p><span class="tag" data-i18n="p2_tag_loan">Loan</span><a href="https://www.interactivebrokers.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">💎</span><h4 data-i18n="p2_loan12">Precious Metals Loan</h4><p data-i18n="p2_loan12_desc">Gold, silver, platinum</p><span class="tag" data-i18n="p2_tag_loan">Loan</span><a href="https://www.apmex.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+
+        <!-- DEPOSITS -->
+        <div class="card fade-in"><span class="icon">💰</span><h4 data-i18n="p2_dep1">Term Deposit</h4><p data-i18n="p2_dep1_desc">Up to 12% per year</p><span class="tag" data-i18n="p2_tag_dep">Deposit</span><a href="https://www.depositaccounts.com/" class="link" target="_blank" data-i18n="p2_link_open">Open →</a></div>
+        <div class="card fade-in"><span class="icon">🏦</span><h4 data-i18n="p2_dep2">Savings Account</h4><p data-i18n="p2_dep2_desc">Free top-up</p><span class="tag" data-i18n="p2_tag_dep">Deposit</span><a href="https://www.ally.com/bank/savings-account/" class="link" target="_blank" data-i18n="p2_link_open">Open →</a></div>
+        <div class="card fade-in"><span class="icon">📊</span><h4 data-i18n="p2_dep3">Investment Deposit</h4><p data-i18n="p2_dep3_desc">Yield + capital protection</p><span class="tag" data-i18n="p2_tag_dep">Deposit</span><a href="https://www.vanguard.com/" class="link" target="_blank" data-i18n="p2_link_open">Open →</a></div>
+        <div class="card fade-in"><span class="icon">🌍</span><h4 data-i18n="p2_dep4">Multi-Currency Deposit</h4><p data-i18n="p2_dep4_desc">USD, EUR, RUB, CNY</p><span class="tag" data-i18n="p2_tag_dep">Deposit</span><a href="https://www.wise.com/" class="link" target="_blank" data-i18n="p2_link_open">Open →</a></div>
+        <div class="card fade-in"><span class="icon">🔄</span><h4 data-i18n="p2_dep5">Top-Up Deposit</h4><p data-i18n="p2_dep5_desc">With additional contributions</p><span class="tag" data-i18n="p2_tag_dep">Deposit</span><a href="https://www.depositaccounts.com/" class="link" target="_blank" data-i18n="p2_link_open">Open →</a></div>
+        <div class="card fade-in"><span class="icon">🏆</span><h4 data-i18n="p2_dep6">Prize Deposit</h4><p data-i18n="p2_dep6_desc">Prize draw</p><span class="tag" data-i18n="p2_tag_dep">Deposit</span><a href="https://www.prizepool.net/" class="link" target="_blank" data-i18n="p2_link_open">Open →</a></div>
+        <div class="card fade-in"><span class="icon">⏳</span><h4 data-i18n="p2_dep7">Demand Deposit</h4><p data-i18n="p2_dep7_desc">Perpetual</p><span class="tag" data-i18n="p2_tag_dep">Deposit</span><a href="https://www.depositaccounts.com/" class="link" target="_blank" data-i18n="p2_link_open">Open →</a></div>
+        <div class="card fade-in"><span class="icon">👵</span><h4 data-i18n="p2_dep8">Pension Deposit</h4><p data-i18n="p2_dep8_desc">Enhanced rate</p><span class="tag" data-i18n="p2_tag_dep">Deposit</span><a href="https://www.fidelity.com/retirement-ira/overview" class="link" target="_blank" data-i18n="p2_link_open">Open →</a></div>
+        <div class="card fade-in"><span class="icon">🧾</span><h4 data-i18n="p2_dep9">Compounding Deposit</h4><p data-i18n="p2_dep9_desc">Compound interest</p><span class="tag" data-i18n="p2_tag_dep">Deposit</span><a href="https://www.depositaccounts.com/" class="link" target="_blank" data-i18n="p2_link_open">Open →</a></div>
+        <div class="card fade-in"><span class="icon">🔒</span><h4 data-i18n="p2_dep10">Safe Deposit</h4><p data-i18n="p2_dep10_desc">Valuables storage</p><span class="tag" data-i18n="p2_tag_dep">Deposit</span><a href="https://www.usbank.com/safe-deposit-boxes.html" class="link" target="_blank" data-i18n="p2_link_open">Open →</a></div>
+        <div class="card fade-in"><span class="icon">💱</span><h4 data-i18n="p2_dep11">Foreign Currency Deposit</h4><p data-i18n="p2_dep11_desc">Currency storage</p><span class="tag" data-i18n="p2_tag_dep">Deposit</span><a href="https://www.wise.com/" class="link" target="_blank" data-i18n="p2_link_open">Open →</a></div>
+        <div class="card fade-in"><span class="icon">🎁</span><h4 data-i18n="p2_dep12">Children's Deposit</h4><p data-i18n="p2_dep12_desc">Save until adulthood</p><span class="tag" data-i18n="p2_tag_dep">Deposit</span><a href="https://www.mint.com/" class="link" target="_blank" data-i18n="p2_link_open">Open →</a></div>
+
+        <!-- GUARANTEES & SBLC -->
+        <div class="card fade-in"><span class="icon">🛡️</span><h4 data-i18n="p2_guar1">Bank Guarantee</h4><p data-i18n="p2_guar1_desc">For tenders and contracts</p><span class="tag" data-i18n="p2_tag_guar">Guarantee</span><a href="https://www.tradefinanceglobal.com/bank-guarantees/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">📄</span><h4 data-i18n="p2_guar2">SBLC</h4><p data-i18n="p2_guar2_desc">Standby Letter of Credit</p><span class="tag" data-i18n="p2_tag_guar">Guarantee</span><a href="https://www.tradefinanceglobal.com/standby-letter-of-credit/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">✈️</span><h4 data-i18n="p2_guar3">Tender Guarantee</h4><p data-i18n="p2_guar3_desc">For bidding</p><span class="tag" data-i18n="p2_tag_guar">Guarantee</span><a href="https://www.tradefinanceglobal.com/bank-guarantees/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">📦</span><h4 data-i18n="p2_guar4">Performance Guarantee</h4><p data-i18n="p2_guar4_desc">Obligations security</p><span class="tag" data-i18n="p2_tag_guar">Guarantee</span><a href="https://www.tradefinanceglobal.com/bank-guarantees/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p2_guar5">Advance Payment Guarantee</h4><p data-i18n="p2_guar5_desc">Prepayment protection</p><span class="tag" data-i18n="p2_tag_guar">Guarantee</span><a href="https://www.tradefinanceglobal.com/bank-guarantees/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🏗️</span><h4 data-i18n="p2_guar6">Quality Guarantee</h4><p data-i18n="p2_guar6_desc">For construction works</p><span class="tag" data-i18n="p2_tag_guar">Guarantee</span><a href="https://www.tradefinanceglobal.com/bank-guarantees/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🔐</span><h4 data-i18n="p2_guar7">Credit Guarantee</h4><p data-i18n="p2_guar7_desc">Loan security</p><span class="tag" data-i18n="p2_tag_guar">Guarantee</span><a href="https://www.tradefinanceglobal.com/bank-guarantees/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🌐</span><h4 data-i18n="p2_lc1">International LC</h4><p data-i18n="p2_lc1_desc">Import/Export</p><span class="tag" data-i18n="p2_tag_lc">LC</span><a href="https://www.tradefinanceglobal.com/letters-of-credit/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">📑</span><h4 data-i18n="p2_lc2">Standby LC</h4><p data-i18n="p2_lc2_desc">Standby Letter of Credit</p><span class="tag" data-i18n="p2_tag_lc">LC</span><a href="https://www.tradefinanceglobal.com/standby-letter-of-credit/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🚢</span><h4 data-i18n="p2_lc3">Collection LC</h4><p data-i18n="p2_lc3_desc">For sea freight</p><span class="tag" data-i18n="p2_tag_lc">LC</span><a href="https://www.tradefinanceglobal.com/letters-of-credit/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🔄</span><h4 data-i18n="p2_lc4">Revolving LC</h4><p data-i18n="p2_lc4_desc">Multiple use</p><span class="tag" data-i18n="p2_tag_lc">LC</span><a href="https://www.tradefinanceglobal.com/letters-of-credit/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🏦</span><h4 data-i18n="p2_lc5">Confirmed LC</h4><p data-i18n="p2_lc5_desc">With second bank guarantee</p><span class="tag" data-i18n="p2_tag_lc">LC</span><a href="https://www.tradefinanceglobal.com/letters-of-credit/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+
+        <!-- LEASING & FACTORING -->
+        <div class="card fade-in"><span class="icon">🚛</span><h4 data-i18n="p2_lease1">Vehicle Leasing</h4><p data-i18n="p2_lease1_desc">Trucks, buses</p><span class="tag" data-i18n="p2_tag_lease">Leasing</span><a href="https://www.leaseguide.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🏗️</span><h4 data-i18n="p2_lease2">Heavy Equipment Leasing</h4><p data-i18n="p2_lease2_desc">Excavators, cranes</p><span class="tag" data-i18n="p2_tag_lease">Leasing</span><a href="https://www.leaseguide.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">💻</span><h4 data-i18n="p2_lease3">Equipment Leasing</h4><p data-i18n="p2_lease3_desc">Machines, servers</p><span class="tag" data-i18n="p2_tag_lease">Leasing</span><a href="https://www.leaseguide.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">✈️</span><h4 data-i18n="p2_lease4">Aircraft Leasing</h4><p data-i18n="p2_lease4_desc">Aviation equipment</p><span class="tag" data-i18n="p2_tag_lease">Leasing</span><a href="https://www.leaseguide.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🚢</span><h4 data-i18n="p2_lease5">Vessel Leasing</h4><p data-i18n="p2_lease5_desc">Marine vessels</p><span class="tag" data-i18n="p2_tag_lease">Leasing</span><a href="https://www.leaseguide.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🏠</span><h4 data-i18n="p2_lease6">Real Estate Leasing</h4><p data-i18n="p2_lease6_desc">Commercial rental</p><span class="tag" data-i18n="p2_tag_lease">Leasing</span><a href="https://www.leaseguide.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">📄</span><h4 data-i18n="p2_factor1">Factoring</h4><p data-i18n="p2_factor1_desc">Financing against receivables</p><span class="tag" data-i18n="p2_tag_factor">Factoring</span><a href="https://www.factoring.org/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🔄</span><h4 data-i18n="p2_factor2">Recourse Factoring</h4><p data-i18n="p2_factor2_desc">With recourse to supplier</p><span class="tag" data-i18n="p2_tag_factor">Factoring</span><a href="https://www.factoring.org/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🌍</span><h4 data-i18n="p2_factor3">International Factoring</h4><p data-i18n="p2_factor3_desc">Export factoring</p><span class="tag" data-i18n="p2_tag_factor">Factoring</span><a href="https://www.factoring.org/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🏦</span><h4 data-i18n="p2_factor4">Public Sector Factoring</h4><p data-i18n="p2_factor4_desc">Government contracts</p><span class="tag" data-i18n="p2_tag_factor">Factoring</span><a href="https://www.factoring.org/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">💰</span><h4 data-i18n="p2_factor5">Reverse Factoring</h4><p data-i18n="p2_factor5_desc">Supply chain financing</p><span class="tag" data-i18n="p2_tag_factor">Factoring</span><a href="https://www.factoring.org/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">📊</span><h4 data-i18n="p2_factor6">Recourse Factoring</h4><p data-i18n="p2_factor6_desc">Risk insurance</p><span class="tag" data-i18n="p2_tag_factor">Factoring</span><a href="https://www.factoring.org/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+
+        <!-- DERIVATIVES & SECURITIES -->
+        <div class="card fade-in"><span class="icon">💱</span><h4 data-i18n="p2_other1">Currency Swap</h4><p data-i18n="p2_other1_desc">Exchange currency flows</p><span class="tag" data-i18n="p2_tag_deriv">Derivative</span><a href="https://www.investopedia.com/terms/c/currencyswap.asp" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">📈</span><h4 data-i18n="p2_other2">Interest Rate Swap</h4><p data-i18n="p2_other2_desc">Rate fixing</p><span class="tag" data-i18n="p2_tag_deriv">Derivative</span><a href="https://www.investopedia.com/terms/i/interestrateswap.asp" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🛡️</span><h4 data-i18n="p2_other3">FX Hedging</h4><p data-i18n="p2_other3_desc">Futures, options</p><span class="tag" data-i18n="p2_tag_deriv">Derivative</span><a href="https://www.investopedia.com/terms/h/hedge.asp" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🧾</span><h4 data-i18n="p2_other4">Deposit Certificate</h4><p data-i18n="p2_other4_desc">Registered or bearer</p><span class="tag" data-i18n="p2_tag_sec">Securities</span><a href="https://www.investopedia.com/terms/c/certificateofdeposit.asp" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">📄</span><h4 data-i18n="p2_other5">Promissory Note</h4><p data-i18n="p2_other5_desc">Simple and transferable</p><span class="tag" data-i18n="p2_tag_sec">Securities</span><a href="https://www.investopedia.com/terms/p/promissorynote.asp" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🏦</span><h4 data-i18n="p2_other6">Bank Check</h4><p data-i18n="p2_other6_desc">Checkbook</p><span class="tag" data-i18n="p2_tag_pay">Payments</span><a href="https://www.swift.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p2_other7">Payment Order</h4><p data-i18n="p2_other7_desc">Wire transfer</p><span class="tag" data-i18n="p2_tag_pay">Payments</span><a href="https://www.swift.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🌐</span><h4 data-i18n="p2_other8">SWIFT Transfer</h4><p data-i18n="p2_other8_desc">International transfer</p><span class="tag" data-i18n="p2_tag_pay">Payments</span><a href="https://www.swift.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">📱</span><h4 data-i18n="p2_other9">Mobile Banking</h4><p data-i18n="p2_other9_desc">Account management</p><span class="tag" data-i18n="p2_tag_digital">Digital</span><a href="https://www.revolut.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🖥️</span><h4 data-i18n="p2_other10">Internet Banking</h4><p data-i18n="p2_other10_desc">Online dashboard</p><span class="tag" data-i18n="p2_tag_digital">Digital</span><a href="https://www.ally.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">🔔</span><h4 data-i18n="p2_other11">Push Notifications</h4><p data-i18n="p2_other11_desc">Transaction alerts</p><span class="tag" data-i18n="p2_tag_digital">Digital</span><a href="https://www.mint.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+        <div class="card fade-in"><span class="icon">📊</span><h4 data-i18n="p2_other12">Financial Monitoring</h4><p data-i18n="p2_other12_desc">Balance tracking</p><span class="tag" data-i18n="p2_tag_digital">Digital</span><a href="https://www.mint.com/" class="link" target="_blank" data-i18n="p2_link_apply">Apply →</a></div>
+    </div>
+</div>
+
+<!-- ===== CALCULATOR 2 ===== -->
+<div class="container">
+    <div class="calculator-section fade-in">
+        <h3 data-i18n="p2_calc2_title">📈 Compound Interest Calculator (Deposit)</h3>
+        <div class="calc-row">
+            <label data-i18n="p2_calc2_amount">Deposit Amount ($)<input type="number" id="depositAmount" value="5000" /></label>
+            <label data-i18n="p2_calc2_rate">Annual Rate (%)<input type="number" id="depositRate" value="10" step="0.1" /></label>
+            <label data-i18n="p2_calc2_term">Term (years)<input type="number" id="depositYears" value="5" /></label>
+            <button class="btn-primary" onclick="calcDeposit()" data-i18n="p2_calc2_btn">Calculate</button>
+        </div>
+        <div class="calc-result" id="depositResult">Final amount: $8,052.55</div>
+    </div>
+</div>
+
+<!-- ===== MASTERCARD GLOBAL BANNER ===== -->
+<div class="container">
+    <div class="mastercard-global-banner">
+        <div>
+            <h3 data-i18n="mastercard_banner_title">🌐 Official <span style="color:#eb001b;">MasterCard Global</span></h3>
+            <p data-i18n="mastercard_banner_desc">Powering economies and empowering people. Innovative solutions for a safer, smarter, digital economy.</p>
+        </div>
+        <a href="https://www.mastercard.com/global/en.html" target="_blank" class="btn-primary" style="flex-shrink:0;" data-i18n="mastercard_banner_btn">Visit mastercard.com →</a>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-inner">
+            <div class="logo-wrap"><img src="mc-logo-primary.png" alt="MasterCard" style="height:32px;" /><span style="font-size:16px;background:linear-gradient(135deg,#eb001b,#f79e1b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">MasterCard</span></div>
+            <div class="footer-socials">
+                <a href="https://www.mastercard.com/global/en.html" target="_blank">🌐 MasterCard Global</a>
+                <a href="https://twitter.com/mastercard" target="_blank">🐦 X</a>
+                <a href="https://t.me/mastercard_official" target="_blank">💬 Telegram</a>
+            </div>
+        </div>
+        <div class="footer-disclaimer" data-i18n="footer_disclaimer">⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR).</div>
+    </div>
+</footer>
+
+<script>
+    function calcLoan() {
+        const P = parseFloat(document.getElementById('loanAmount').value);
+        const r = parseFloat(document.getElementById('loanRate').value) / 100 / 12;
+        const n = parseFloat(document.getElementById('loanTerm').value);
+        if (!P || !r || !n) { document.getElementById('loanResult').textContent = 'Fill in all fields'; return; }
+        const payment = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+        document.getElementById('loanResult').textContent = `Monthly payment: $${payment.toFixed(2)} | Total: $${(payment * n).toFixed(2)} | Overpayment: $${(payment * n - P).toFixed(2)}`;
+    }
+    calcLoan();
+
+    function calcDeposit() {
+        const P = parseFloat(document.getElementById('depositAmount').value);
+        const r = parseFloat(document.getElementById('depositRate').value) / 100;
+        const t = parseFloat(document.getElementById('depositYears').value);
+        if (!P || !r || !t) { document.getElementById('depositResult').textContent = 'Fill in all fields'; return; }
+        const total = P * Math.pow(1 + r, t);
+        document.getElementById('depositResult').textContent = `Final amount: $${total.toFixed(2)} | Profit: $${(total - P).toFixed(2)}`;
+    }
+    calcDeposit();
+
+    const translations = {
+        en: {
+            nav_home: "Home", nav_finance: "Finance", nav_crypto: "Crypto", nav_exchange: "Exchange",
+            nav_insurance: "Insurance", nav_business: "Business", nav_travel: "Travel", nav_cards: "Cards", nav_buy: "Buy MasterCard",
+            hero_btn_mastercard: "🌐 MasterCard Global",
+            mastercard_banner_title: "🌐 Official MasterCard Global",
+            mastercard_banner_desc: "Powering economies and empowering people. Innovative solutions for a safer, smarter, digital economy.",
+            mastercard_banner_btn: "Visit mastercard.com →",
+            footer_disclaimer: "⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR).",
+            p2_badge: "🏦 100+ Financial Instruments",
+            p2_title: "Interbank", p2_title2: "Finance",
+            p2_desc: "Loans, deposits, bank guarantees, SBLC, letters of credit, leasing, factoring and more than 100 products through MasterCard.",
+            p2_calc1_title: "📊 Loan Calculator (Annuity)",
+            p2_calc1_amount: "Loan Amount ($)", p2_calc1_rate: "Annual Rate (%)", p2_calc1_term: "Term (months)", p2_calc1_btn: "Calculate",
+            p2_calc2_title: "📈 Compound Interest Calculator (Deposit)",
+            p2_calc2_amount: "Deposit Amount ($)", p2_calc2_rate: "Annual Rate (%)", p2_calc2_term: "Term (years)", p2_calc2_btn: "Calculate",
+            p2_sec_title: "All", p2_sec_title2: "Financial Products", p2_sec_desc: "More than 100 tools for individuals and businesses.",
+            p2_tag_loan: "Loan", p2_tag_dep: "Deposit", p2_tag_guar: "Guarantee", p2_tag_lc: "LC", p2_tag_lease: "Leasing", p2_tag_factor: "Factoring", p2_tag_deriv: "Derivative", p2_tag_sec: "Securities", p2_tag_pay: "Payments", p2_tag_digital: "Digital",
+            p2_link_apply: "Apply →", p2_link_open: "Open →",
+            p2_loan1: "Consumer Loan", p2_loan1_desc: "Up to $1M without collateral",
+            p2_loan2: "Mortgage", p2_loan2_desc: "For housing up to 30 years",
+            p2_loan3: "Auto Loan", p2_loan3_desc: "For new or used cars",
+            p2_loan4: "Education Loan", p2_loan4_desc: "With deferment",
+            p2_loan5: "Medical Loan", p2_loan5_desc: "For healthcare services",
+            p2_loan6: "Retail Loan", p2_loan6_desc: "Installment purchase",
+            p2_loan7: "Agricultural Loan", p2_loan7_desc: "For farming equipment",
+            p2_loan8: "Investment Loan", p2_loan8_desc: "For business and startups",
+            p2_loan9: "MasterCard Credit Card", p2_loan9_desc: "Grace period up to 100 days",
+            p2_loan10: "Credit Line", p2_loan10_desc: "Overdraft facility",
+            p2_loan11: "Securities-Backed Loan", p2_loan11_desc: "Against securities",
+            p2_loan12: "Precious Metals Loan", p2_loan12_desc: "Gold, silver, platinum",
+            p2_dep1: "Term Deposit", p2_dep1_desc: "Up to 12% per year",
+            p2_dep2: "Savings Account", p2_dep2_desc: "Free top-up",
+            p2_dep3: "Investment Deposit", p2_dep3_desc: "Yield + capital protection",
+            p2_dep4: "Multi-Currency Deposit", p2_dep4_desc: "USD, EUR, RUB, CNY",
+            p2_dep5: "Top-Up Deposit", p2_dep5_desc: "With additional contributions",
+            p2_dep6: "Prize Deposit", p2_dep6_desc: "Prize draw",
+            p2_dep7: "Demand Deposit", p2_dep7_desc: "Perpetual",
+            p2_dep8: "Pension Deposit", p2_dep8_desc: "Enhanced rate",
+            p2_dep9: "Compounding Deposit", p2_dep9_desc: "Compound interest",
+            p2_dep10: "Safe Deposit", p2_dep10_desc: "Valuables storage",
+            p2_dep11: "Foreign Currency Deposit", p2_dep11_desc: "Currency storage",
+            p2_dep12: "Children's Deposit", p2_dep12_desc: "Save until adulthood",
+            p2_guar1: "Bank Guarantee", p2_guar1_desc: "For tenders and contracts",
+            p2_guar2: "SBLC", p2_guar2_desc: "Standby Letter of Credit",
+            p2_guar3: "Tender Guarantee", p2_guar3_desc: "For bidding",
+            p2_guar4: "Performance Guarantee", p2_guar4_desc: "Obligations security",
+            p2_guar5: "Advance Payment Guarantee", p2_guar5_desc: "Prepayment protection",
+            p2_guar6: "Quality Guarantee", p2_guar6_desc: "For construction works",
+            p2_guar7: "Credit Guarantee", p2_guar7_desc: "Loan security",
+            p2_lc1: "International LC", p2_lc1_desc: "Import/Export",
+            p2_lc2: "Standby LC", p2_lc2_desc: "Standby Letter of Credit",
+            p2_lc3: "Collection LC", p2_lc3_desc: "For sea freight",
+            p2_lc4: "Revolving LC", p2_lc4_desc: "Multiple use",
+            p2_lc5: "Confirmed LC", p2_lc5_desc: "With second bank guarantee",
+            p2_lease1: "Vehicle Leasing", p2_lease1_desc: "Trucks, buses",
+            p2_lease2: "Heavy Equipment Leasing", p2_lease2_desc: "Excavators, cranes",
+            p2_lease3: "Equipment Leasing", p2_lease3_desc: "Machines, servers",
+            p2_lease4: "Aircraft Leasing", p2_lease4_desc: "Aviation equipment",
+            p2_lease5: "Vessel Leasing", p2_lease5_desc: "Marine vessels",
+            p2_lease6: "Real Estate Leasing", p2_lease6_desc: "Commercial rental",
+            p2_factor1: "Factoring", p2_factor1_desc: "Financing against receivables",
+            p2_factor2: "Recourse Factoring", p2_factor2_desc: "With recourse to supplier",
+            p2_factor3: "International Factoring", p2_factor3_desc: "Export factoring",
+            p2_factor4: "Public Sector Factoring", p2_factor4_desc: "Government contracts",
+            p2_factor5: "Reverse Factoring", p2_factor5_desc: "Supply chain financing",
+            p2_factor6: "Recourse Factoring", p2_factor6_desc: "Risk insurance",
+            p2_other1: "Currency Swap", p2_other1_desc: "Exchange currency flows",
+            p2_other2: "Interest Rate Swap", p2_other2_desc: "Rate fixing",
+            p2_other3: "FX Hedging", p2_other3_desc: "Futures, options",
+            p2_other4: "Deposit Certificate", p2_other4_desc: "Registered or bearer",
+            p2_other5: "Promissory Note", p2_other5_desc: "Simple and transferable",
+            p2_other6: "Bank Check", p2_other6_desc: "Checkbook",
+            p2_other7: "Payment Order", p2_other7_desc: "Wire transfer",
+            p2_other8: "SWIFT Transfer", p2_other8_desc: "International transfer",
+            p2_other9: "Mobile Banking", p2_other9_desc: "Account management",
+            p2_other10: "Internet Banking", p2_other10_desc: "Online dashboard",
+            p2_other11: "Push Notifications", p2_other11_desc: "Transaction alerts",
+            p2_other12: "Financial Monitoring", p2_other12_desc: "Balance tracking"
+        },
+        ru: {
+            nav_home: "Главная", nav_finance: "Финансы", nav_crypto: "Крипто", nav_exchange: "Биржа",
+            nav_insurance: "Страхование", nav_business: "Бизнес", nav_travel: "Туризм", nav_cards: "Карты", nav_buy: "Купить MasterCard",
+            hero_btn_mastercard: "🌐 MasterCard Global",
+            mastercard_banner_title: "🌐 Официальный сайт MasterCard Global",
+            mastercard_banner_desc: "Расширение экономических возможностей и расширение прав и возможностей людей. Инновационные решения для более безопасной, умной и цифровой экономики.",
+            mastercard_banner_btn: "Перейти на mastercard.com →",
+            footer_disclaimer: "⚠️ Данный проект является сообщественным и не аффилирован с Mastercard Incorporated. Криптовалютные инвестиции сопряжены с высоким риском. Всегда проводите собственное исследование (DYOR).",
+            p2_badge: "🏦 100+ финансовых инструментов",
+            p2_title: "Межбанковские", p2_title2: "финансы",
+            p2_desc: "Кредиты, депозиты, банковские гарантии, SBLC, аккредитивы, лизинг, факторинг и более 100 продуктов через MasterCard.",
+            p2_calc1_title: "📊 Кредитный калькулятор (аннуитет)",
+            p2_calc1_amount: "Сумма кредита ($)", p2_calc1_rate: "Годовая ставка (%)", p2_calc1_term: "Срок (мес)", p2_calc1_btn: "Рассчитать",
+            p2_calc2_title: "📈 Калькулятор сложного процента (депозит)",
+            p2_calc2_amount: "Сумма вклада ($)", p2_calc2_rate: "Годовая ставка (%)", p2_calc2_term: "Срок (лет)", p2_calc2_btn: "Рассчитать",
+            p2_sec_title: "Все", p2_sec_title2: "финансовые продукты", p2_sec_desc: "Более 100 инструментов для частных лиц и бизнеса.",
+            p2_tag_loan: "Кредит", p2_tag_dep: "Депозит", p2_tag_guar: "Гарантия", p2_tag_lc: "Аккредитив", p2_tag_lease: "Лизинг", p2_tag_factor: "Факторинг", p2_tag_deriv: "Дериватив", p2_tag_sec: "Ценные бумаги", p2_tag_pay: "Платежи", p2_tag_digital: "Цифровые",
+            p2_link_apply: "Оформить →", p2_link_open: "Открыть →",
+            p2_loan1: "Потребительский кредит", p2_loan1_desc: "До 1 млн $ без залога",
+            p2_loan2: "Ипотека", p2_loan2_desc: "На покупку жилья до 30 лет",
+            p2_loan3: "Автокредит", p2_loan3_desc: "На новый или б/у автомобиль",
+            p2_loan4: "Образовательный кредит", p2_loan4_desc: "С отсрочкой",
+            p2_loan5: "Кредит на лечение", p2_loan5_desc: "Медицинские услуги",
+            p2_loan6: "Товарный кредит", p2_loan6_desc: "Покупка в рассрочку",
+            p2_loan7: "Сельхозкредит", p2_loan7_desc: "На посевную, технику",
+            p2_loan8: "Инвестиционный кредит", p2_loan8_desc: "Для бизнеса и стартапов",
+            p2_loan9: "Кредитная карта MasterCard", p2_loan9_desc: "Льготный период до 100 дней",
+            p2_loan10: "Кредитный лимит", p2_loan10_desc: "На овердрафт счета",
+            p2_loan11: "Кредит под залог ЦБ", p2_loan11_desc: "Под ценные бумаги",
+            p2_loan12: "Кредит под залог металлов", p2_loan12_desc: "Золото, серебро, платина",
+            p2_dep1: "Срочный депозит", p2_dep1_desc: "До 12% годовых",
+            p2_dep2: "Накопительный счет", p2_dep2_desc: "Свободное пополнение",
+            p2_dep3: "Инвестиционный депозит", p2_dep3_desc: "Доходность + защита капитала",
+            p2_dep4: "Мультивалютный депозит", p2_dep4_desc: "USD, EUR, RUB, CNY",
+            p2_dep5: "Пополняемый депозит", p2_dep5_desc: "С возможностью довнесения",
+            p2_dep6: "Призовой депозит", p2_dep6_desc: "Розыгрыш призов",
+            p2_dep7: "Депозит до востребования", p2_dep7_desc: "Бессрочный",
+            p2_dep8: "Пенсионный депозит", p2_dep8_desc: "Повышенная ставка",
+            p2_dep9: "Депозит с капитализацией", p2_dep9_desc: "Сложный процент",
+            p2_dep10: "Сейф-депозит", p2_dep10_desc: "Хранение ценностей",
+            p2_dep11: "Валютный депозит", p2_dep11_desc: "Хранение валюты",
+            p2_dep12: "Депозит для детей", p2_dep12_desc: "Накопление к совершеннолетию",
+            p2_guar1: "Банковская гарантия", p2_guar1_desc: "Для тендеров и контрактов",
+            p2_guar2: "SBLC", p2_guar2_desc: "Резервный аккредитив",
+            p2_guar3: "Тендерная гарантия", p2_guar3_desc: "Для участия в торгах",
+            p2_guar4: "Гарантия исполнения контракта", p2_guar4_desc: "Обеспечение обязательств",
+            p2_guar5: "Гарантия возврата аванса", p2_guar5_desc: "Защита предоплаты",
+            p2_guar6: "Гарантия качества", p2_guar6_desc: "На строительные работы",
+            p2_guar7: "Гарантия кредитная", p2_guar7_desc: "Обеспечение по кредиту",
+            p2_lc1: "Международный аккредитив", p2_lc1_desc: "Импорт/экспорт",
+            p2_lc2: "Резервный аккредитив", p2_lc2_desc: "Standby LC",
+            p2_lc3: "Аккредитив по инкассо", p2_lc3_desc: "Для морских перевозок",
+            p2_lc4: "Револьверный аккредитив", p2_lc4_desc: "Многократное использование",
+            p2_lc5: "Подтвержденный аккредитив", p2_lc5_desc: "С гарантией второго банка",
+            p2_lease1: "Лизинг автотранспорта", p2_lease1_desc: "Грузовики, автобусы",
+            p2_lease2: "Лизинг спецтехники", p2_lease2_desc: "Экскаваторы, краны",
+            p2_lease3: "Лизинг оборудования", p2_lease3_desc: "Станки, серверы",
+            p2_lease4: "Лизинг самолётов", p2_lease4_desc: "Авиатехника",
+            p2_lease5: "Лизинг судов", p2_lease5_desc: "Морские суда",
+            p2_lease6: "Лизинг недвижимости", p2_lease6_desc: "Коммерческая аренда",
+            p2_factor1: "Факторинг", p2_factor1_desc: "Финансирование под дебиторку",
+            p2_factor2: "Регрессный факторинг", p2_factor2_desc: "С регрессом на поставщика",
+            p2_factor3: "Международный факторинг", p2_factor3_desc: "Экспортный факторинг",
+            p2_factor4: "Факторинг с бюджетом", p2_factor4_desc: "Государственные контракты",
+            p2_factor5: "Обратный факторинг", p2_factor5_desc: "Финансирование цепочки",
+            p2_factor6: "Факторинг с правом регресса", p2_factor6_desc: "Страхование рисков",
+            p2_other1: "Валютный своп", p2_other1_desc: "Обмен валютными потоками",
+            p2_other2: "Процентный своп", p2_other2_desc: "Фиксация ставки",
+            p2_other3: "Хеджирование валютных рисков", p2_other3_desc: "Фьючерсы, опционы",
+            p2_other4: "Депозитный сертификат", p2_other4_desc: "Именной или на предъявителя",
+            p2_other5: "Вексель", p2_other5_desc: "Простой и переводной",
+            p2_other6: "Банковский чек", p2_other6_desc: "Чековая книжка",
+            p2_other7: "Платежное поручение", p2_other7_desc: "Безналичный перевод",
+            p2_other8: "SWIFT перевод", p2_other8_desc: "Международный перевод",
+            p2_other9: "Мобильный банк", p2_other9_desc: "Управление счетом",
+            p2_other10: "Интернет-банк", p2_other10_desc: "Онлайн-кабинет",
+            p2_other11: "Push-уведомления", p2_other11_desc: "Информирование по операциям",
+            p2_other12: "Финансовый мониторинг", p2_other12_desc: "Отслеживание баланса"
+        },
+        es: {}, fr: {}, zh: {}, ja: {}, ar: {}, hi: {}
+    };
+
+    let currentLang = localStorage.getItem('mastercardLang') || 'en';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('mastercardLang', lang);
+        document.querySelectorAll('#languageSwitcher a').forEach(el => {
+            el.classList.toggle('active', el.dataset.lang === lang);
+        });
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            const translation = translations[lang]?.[key];
+            if (translation !== undefined) el.textContent = translation;
+        });
+        document.documentElement.lang = lang;
+    }
+
+    document.querySelectorAll('#languageSwitcher a').forEach(el => {
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            setLanguage(this.dataset.lang);
+        });
+    });
+
+    const faders = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    faders.forEach(el => observer.observe(el));
+
+    setLanguage(currentLang);
+</script>
+</body>
+                                                                                                                                                                                                                                                                                                                                                </html>
