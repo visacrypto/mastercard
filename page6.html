@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MasterCard – Business Services | B2B, Payroll, Corporate Cards</title>
+    <link rel="icon" href="mc-favicon.png" type="image/png" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0a0a1a; color: #fff; line-height: 1.6; overflow-x: hidden; }
+        a { color: #eb001b; text-decoration: none; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+        .lang-bar {
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 8px 0;
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        .lang-bar .container { display: flex; justify-content: flex-end; gap: 12px; flex-wrap: wrap; }
+        .lang-bar a { color: #7a84a3; transition: color 0.3s; font-weight: 500; padding: 4px 12px; border-radius: 4px; cursor: pointer; }
+        .lang-bar a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+        .lang-bar a.active { color: #eb001b; background: rgba(235,0,27,0.12); }
+
+        .bg-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: radial-gradient(ellipse at 20% 50%, #1a1a4e, #0a0a1a 70%);
+            overflow: hidden;
+        }
+        .bg-canvas::before {
+            content: ''; position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+            background: radial-gradient(circle at 30% 40%, rgba(235,0,27,0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(247,158,27,0.06) 0%, transparent 50%);
+            animation: bgPulse 12s ease-in-out infinite alternate;
+        }
+        @keyframes bgPulse { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-5%,-3%) scale(1.1); } }
+        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; animation: orbFloat 18s infinite alternate ease-in-out; }
+        .orb-1 { width: 500px; height: 500px; background: #eb001b; top: -10%; left: -5%; }
+        .orb-2 { width: 400px; height: 400px; background: #f79e1b; bottom: -10%; right: -5%; animation-delay: -6s; }
+        .orb-3 { width: 300px; height: 300px; background: #9945ff; top: 50%; left: 50%; animation-delay: -12s; }
+        .orb-4 { width: 350px; height: 350px; background: #ff6b6b; top: 20%; right: 10%; animation-delay: -4s; }
+        .orb-5 { width: 250px; height: 250px; background: #ffd93d; bottom: 20%; left: 10%; animation-delay: -9s; }
+        @keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(60px,-40px) scale(1.2); } }
+
+        .ticker-wrap {
+            position: relative; z-index: 5; width: 100%; overflow: hidden;
+            background: rgba(255,255,255,0.03);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 10px 0;
+            white-space: nowrap;
+        }
+        .ticker {
+            display: inline-block;
+            animation: tickerScroll 30s linear infinite;
+            font-size: 14px;
+            font-weight: 500;
+            color: #b0b8d1;
+        }
+        .ticker span { margin: 0 40px; color: #eb001b; }
+        .ticker .highlight { color: #f79e1b; }
+        @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        header {
+            position: relative; z-index: 10; padding: 18px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            background: rgba(10,10,26,0.6);
+        }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .logo-wrap { display: flex; align-items: center; gap: 12px; }
+        .logo-wrap img { height: 44px; width: auto; }
+        .logo-wrap span {
+            font-weight: 700; font-size: 22px; letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .nav-links a {
+            font-size: 13px; font-weight: 500; color: #b0b8d1; transition: color 0.3s, background 0.3s;
+            padding: 6px 12px; border-radius: 8px;
+        }
+        .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .nav-links a.active { color: #eb001b; background: rgba(235,0,27,0.1); }
+        .btn-header {
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+            padding: 10px 28px; border-radius: 40px; font-weight: 600; font-size: 14px;
+            color: #fff !important; transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(235,0,27,0.3);
+        }
+        .btn-header:hover { transform: scale(1.04); box-shadow: 0 6px 30px rgba(235,0,27,0.5); }
+
+        .page-hero { position: relative; z-index: 5; padding: 40px 0 30px; text-align: center; }
+        .page-hero h1 { font-size: clamp(32px, 4vw, 48px); font-weight: 700; }
+        .page-hero h1 span { background: linear-gradient(135deg, #eb001b, #f79e1b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .page-hero p { color: #b0b8d1; max-width: 600px; margin: 12px auto 0; }
+
+        .badge {
+            display: inline-block; background: rgba(235,0,27,0.12); color: #eb001b;
+            padding: 4px 18px; border-radius: 40px; font-size: 13px; font-weight: 600;
+            letter-spacing: 0.5px; margin-bottom: 14px; border: 1px solid rgba(235,0,27,0.15);
+        }
+
+        .section-title { text-align: center; margin: 40px 0 32px; }
+        .section-title h2 { font-size: clamp(26px, 3vw, 36px); font-weight: 700; }
+        .section-title p { color: #b0b8d1; }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+            margin: 24px 0;
+            position: relative; z-index: 5;
+        }
+        .card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 20px 18px;
+            transition: transform 0.3s, border-color 0.3s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .card:hover { transform: translateY(-4px); border-color: rgba(235,0,27,0.25); }
+        .card .icon { font-size: 28px; margin-bottom: 8px; display: block; }
+        .card h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .card p { color: #b0b8d1; font-size: 13px; }
+        .card .tag {
+            display: inline-block; background: rgba(235,0,27,0.08); color: #eb001b;
+            padding: 2px 12px; border-radius: 40px; font-size: 11px; font-weight: 600;
+            margin-top: 8px; border: 1px solid rgba(235,0,27,0.08);
+        }
+        .card .link { display: block; margin-top: 10px; font-size: 13px; font-weight: 600; color: #eb001b; }
+        .card .link:hover { text-decoration: underline; }
+
+        .mastercard-global-banner {
+            background: linear-gradient(135deg, rgba(26,26,78,0.8), rgba(10,10,26,0.8));
+            border: 1px solid rgba(235,0,27,0.15);
+            border-radius: 20px; padding: 32px 40px; margin: 40px 0;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;
+        }
+        .mastercard-global-banner h3 { font-size: 22px; }
+        .mastercard-global-banner p { color: #b0b8d1; max-width: 500px; }
+
+        footer {
+            position: relative; z-index: 5; padding: 40px 0 24px;
+            border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px;
+        }
+        .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-inner p { color: #5a6380; font-size: 14px; }
+        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials a { color: #5a6380; font-size: 18px; transition: color 0.3s; }
+        .footer-socials a:hover { color: #fff; }
+        .footer-disclaimer { text-align: center; margin-top: 20px; font-size: 12px; color: #3a4360; max-width: 700px; margin-left: auto; margin-right: auto; }
+
+        @media (max-width: 600px) {
+            .nav-links { gap: 8px; }
+            .nav-links a { font-size: 12px; padding: 4px 8px; }
+            .cards-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .mastercard-global-banner { flex-direction: column; text-align: center; }
+            .ticker { font-size: 12px; }
+        }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="lang-bar">
+    <div class="container" id="languageSwitcher">
+        <a data-lang="en" class="active">English</a>
+        <a data-lang="ru">Русский</a>
+        <a data-lang="es">Español</a>
+        <a data-lang="fr">Français</a>
+        <a data-lang="zh">中文</a>
+        <a data-lang="ja">日本語</a>
+        <a data-lang="ar">العربية</a>
+        <a data-lang="hi">हिन्दी</a>
+    </div>
+</div>
+
+<div class="bg-canvas">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+</div>
+
+<div class="ticker-wrap">
+    <div class="ticker">
+        <span>💼 Payments — Stripe, PayPal</span>
+        <span>💰 Payroll — Gusto, Deel</span>
+        <span>📊 Accounting — QuickBooks, Xero</span>
+        <span>💳 Cards — Brex, Ramp</span>
+        <span>🤖 Automation — Zapier, Salesforce</span>
+        <span>💼 Payments — Stripe, PayPal</span>
+        <span>💰 Payroll — Gusto, Deel</span>
+        <span>📊 Accounting — QuickBooks, Xero</span>
+        <span>💳 Cards — Brex, Ramp</span>
+        <span>🤖 Automation — Zapier, Salesforce</span>
+    </div>
+</div>
+
+<header>
+    <div class="container header-inner">
+        <div class="logo-wrap">
+            <img src="mc-logo-primary.png" alt="MasterCard" />
+            <span>MasterCard</span>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Home</a>
+            <a href="page2.html" data-i18n="nav_finance">Finance</a>
+            <a href="page3.html" data-i18n="nav_crypto">Crypto</a>
+            <a href="page4.html" data-i18n="nav_exchange">Exchange</a>
+            <a href="page5.html" data-i18n="nav_insurance">Insurance</a>
+            <a href="page6.html" class="active" data-i18n="nav_business">Business</a>
+            <a href="page7.html" data-i18n="nav_travel">Travel</a>
+            <a href="page8.html" data-i18n="nav_cards">Cards</a>
+            <a href="index.html#buy" class="btn-header" data-i18n="nav_buy">Buy MasterCard</a>
+        </nav>
+    </div>
+</header>
+
+<section class="page-hero">
+    <div class="container">
+        <div class="badge" data-i18n="p6_badge">🏢 100+ Business Solutions</div>
+        <h1><span data-i18n="p6_title">Business</span> <span data-i18n="p6_title2">Services</span></h1>
+        <p data-i18n="p6_desc">B2B payments, payroll projects, corporate cards, accounting and more than 100 products through MasterCard.</p>
+        <div style="margin-top:16px;">
+            <a href="https://www.mastercard.com/global/en.html" target="_blank" class="btn-secondary" data-i18n="hero_btn_mastercard" style="display:inline-block;">🌐 MasterCard Global</a>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="section-title fade-in">
+        <h2><span data-i18n="p6_sec_title">All</span> <span style="color:#eb001b;" data-i18n="p6_sec_title2">Business Products</span></h2>
+        <p data-i18n="p6_sec_desc">More than 100 tools for business development and management.</p>
+    </div>
+    <div class="cards-grid">
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p6_b2b1">B2B Payments</h4><p data-i18n="p6_b2b1_desc">Between legal entities</p><span class="tag" data-i18n="p6_tag_pay">Payments</span><a href="https://stripe.com/payments" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🌐</span><h4 data-i18n="p6_b2b2">Cross-Border Payments</h4><p data-i18n="p6_b2b2_desc">International</p><span class="tag" data-i18n="p6_tag_pay">Payments</span><a href="https://wise.com/business" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">⏱️</span><h4 data-i18n="p6_b2b3">Instant Payments</h4><p data-i18n="p6_b2b3_desc">Real-time</p><span class="tag" data-i18n="p6_tag_pay">Payments</span><a href="https://www.paypal.com/business" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">📊</span><h4 data-i18n="p6_b2b4">Payment Gateways</h4><p data-i18n="p6_b2b4_desc">API for sites</p><span class="tag" data-i18n="p6_tag_pay">Payments</span><a href="https://www.authorize.net/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">📱</span><h4 data-i18n="p6_b2b5">QR Payments</h4><p data-i18n="p6_b2b5_desc">Fast payment</p><span class="tag" data-i18n="p6_tag_pay">Payments</span><a href="https://www.square.com/payments" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🧾</span><h4 data-i18n="p6_b2b6">Electronic Invoices</h4><p data-i18n="p6_b2b6_desc">Document flow</p><span class="tag" data-i18n="p6_tag_pay">Payments</span><a href="https://www.docusign.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p6_pay1">MasterCard Payroll Cards</h4><p data-i18n="p6_pay1_desc">For employees</p><span class="tag" data-i18n="p6_tag_payroll">Payroll</span><a href="https://www.gusto.com/payroll" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">💳</span><h4 data-i18n="p6_pay2">Corporate Cards</h4><p data-i18n="p6_pay2_desc">For expenses</p><span class="tag" data-i18n="p6_tag_payroll">Payroll</span><a href="https://www.brex.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">💰</span><h4 data-i18n="p6_pay3">Crypto Payroll</h4><p data-i18n="p6_pay3_desc">USDC, MasterCard</p><span class="tag" data-i18n="p6_tag_payroll">Payroll</span><a href="https://www.deel.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">📊</span><h4 data-i18n="p6_pay4">Payroll Calculator</h4><p data-i18n="p6_pay4_desc">Tax calculator</p><span class="tag" data-i18n="p6_tag_payroll">Payroll</span><a href="https://www.adp.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">📋</span><h4 data-i18n="p6_pay5">Timesheet</h4><p data-i18n="p6_pay5_desc">Working hours</p><span class="tag" data-i18n="p6_tag_payroll">Payroll</span><a href="https://www.toggl.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+
+        <div class="card fade-in"><span class="icon">📊</span><h4 data-i18n="p6_acc1">Accounting</h4><p data-i18n="p6_acc1_desc">Transactions</p><span class="tag" data-i18n="p6_tag_acc">Accounting</span><a href="https://quickbooks.intuit.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🧾</span><h4 data-i18n="p6_acc2">Tax Accounting</h4><p data-i18n="p6_acc2_desc">Tax calculation</p><span class="tag" data-i18n="p6_tag_acc">Accounting</span><a href="https://www.turbotax.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">📄</span><h4 data-i18n="p6_acc3">Reporting</h4><p data-i18n="p6_acc3_desc">Electronic</p><span class="tag" data-i18n="p6_tag_acc">Accounting</span><a href="https://www.xero.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">📋</span><h4 data-i18n="p6_acc4">Primary Documents</h4><p data-i18n="p6_acc4_desc">Invoices, waybills</p><span class="tag" data-i18n="p6_tag_acc">Accounting</span><a href="https://www.freshbooks.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">📊</span><h4 data-i18n="p6_acc5">Balance Sheet</h4><p data-i18n="p6_acc5_desc">Financial reports</p><span class="tag" data-i18n="p6_tag_acc">Accounting</span><a href="https://www.sage.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+
+        <div class="card fade-in"><span class="icon">🏢</span><h4 data-i18n="p6_other1">Business Registration</h4><p data-i18n="p6_other1_desc">LLC, sole proprietor</p><span class="tag" data-i18n="p6_tag_legal">Legal</span><a href="https://www.legalzoom.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">📄</span><h4 data-i18n="p6_other2">Legal Consulting</h4><p data-i18n="p6_other2_desc">Contracts</p><span class="tag" data-i18n="p6_tag_legal">Legal</span><a href="https://www.rocketlawyer.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🤖</span><h4 data-i18n="p6_other3">Business Automation</h4><p data-i18n="p6_other3_desc">CRM, ERP</p><span class="tag" data-i18n="p6_tag_tech">Tech</span><a href="https://www.salesforce.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">💻</span><h4 data-i18n="p6_other4">Website Development</h4><p data-i18n="p6_other4_desc">Turnkey</p><span class="tag" data-i18n="p6_tag_tech">Tech</span><a href="https://www.wix.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">🛡️</span><h4 data-i18n="p6_other5">Cybersecurity</h4><p data-i18n="p6_other5_desc">Business protection</p><span class="tag" data-i18n="p6_tag_tech">Tech</span><a href="https://www.crowdstrike.com/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+        <div class="card fade-in"><span class="icon">📊</span><h4 data-i18n="p6_other6">Business Analytics</h4><p data-i18n="p6_other6_desc">Big Data</p><span class="tag" data-i18n="p6_tag_analytics">Analytics</span><a href="https://www.google.com/analytics/" class="link" target="_blank" data-i18n="p6_link_start">Start →</a></div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="mastercard-global-banner">
+        <div>
+            <h3 data-i18n="mastercard_banner_title">🌐 Official <span style="color:#eb001b;">MasterCard Global</span></h3>
+            <p data-i18n="mastercard_banner_desc">Powering economies and empowering people. Innovative solutions for a safer, smarter, digital economy.</p>
+        </div>
+        <a href="https://www.mastercard.com/global/en.html" target="_blank" class="btn-primary" style="flex-shrink:0;" data-i18n="mastercard_banner_btn">Visit mastercard.com →</a>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-inner">
+            <div class="logo-wrap"><img src="mc-logo-primary.png" alt="MasterCard" style="height:32px;" /><span style="font-size:16px;background:linear-gradient(135deg,#eb001b,#f79e1b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">MasterCard</span></div>
+            <div class="footer-socials">
+                <a href="https://www.mastercard.com/global/en.html" target="_blank">🌐 MasterCard Global</a>
+                <a href="https://twitter.com/mastercard" target="_blank">🐦 X</a>
+                <a href="https://t.me/mastercard_official" target="_blank">💬 Telegram</a>
+            </div>
+        </div>
+        <div class="footer-disclaimer" data-i18n="footer_disclaimer">⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR).</div>
+    </div>
+</footer>
+
+<script>
+    const translations = {
+        en: {
+            nav_home: "Home", nav_finance: "Finance", nav_crypto: "Crypto", nav_exchange: "Exchange",
+            nav_insurance: "Insurance", nav_business: "Business", nav_travel: "Travel", nav_cards: "Cards", nav_buy: "Buy MasterCard",
+            hero_btn_mastercard: "🌐 MasterCard Global",
+            mastercard_banner_title: "🌐 Official MasterCard Global",
+            mastercard_banner_desc: "Powering economies and empowering people. Innovative solutions for a safer, smarter, digital economy.",
+            mastercard_banner_btn: "Visit mastercard.com →",
+            footer_disclaimer: "⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR).",
+            p6_badge: "🏢 100+ Business Solutions",
+            p6_title: "Business", p6_title2: "Services",
+            p6_desc: "B2B payments, payroll projects, corporate cards, accounting and more than 100 products through MasterCard.",
+            p6_sec_title: "All", p6_sec_title2: "Business Products", p6_sec_desc: "More than 100 tools for business development and management.",
+            p6_link_start: "Start →",
+            p6_tag_pay: "Payments", p6_tag_payroll: "Payroll", p6_tag_acc: "Accounting", p6_tag_legal: "Legal", p6_tag_tech: "Tech", p6_tag_analytics: "Analytics",
+            p6_b2b1: "B2B Payments", p6_b2b1_desc: "Between legal entities",
+            p6_b2b2: "Cross-Border Payments", p6_b2b2_desc: "International",
+            p6_b2b3: "Instant Payments", p6_b2b3_desc: "Real-time",
+            p6_b2b4: "Payment Gateways", p6_b2b4_desc: "API for sites",
+            p6_b2b5: "QR Payments", p6_b2b5_desc: "Fast payment",
+            p6_b2b6: "Electronic Invoices", p6_b2b6_desc: "Document flow",
+            p6_pay1: "MasterCard Payroll Cards", p6_pay1_desc: "For employees",
+            p6_pay2: "Corporate Cards", p6_pay2_desc: "For expenses",
+            p6_pay3: "Crypto Payroll", p6_pay3_desc: "USDC, MasterCard",
+            p6_pay4: "Payroll Calculator", p6_pay4_desc: "Tax calculator",
+            p6_pay5: "Timesheet", p6_pay5_desc: "Working hours",
+            p6_acc1: "Accounting", p6_acc1_desc: "Transactions",
+            p6_acc2: "Tax Accounting", p6_acc2_desc: "Tax calculation",
+            p6_acc3: "Reporting", p6_acc3_desc: "Electronic",
+            p6_acc4: "Primary Documents", p6_acc4_desc: "Invoices, waybills",
+            p6_acc5: "Balance Sheet", p6_acc5_desc: "Financial reports",
+            p6_other1: "Business Registration", p6_other1_desc: "LLC, sole proprietor",
+            p6_other2: "Legal Consulting", p6_other2_desc: "Contracts",
+            p6_other3: "Business Automation", p6_other3_desc: "CRM, ERP",
+            p6_other4: "Website Development", p6_other4_desc: "Turnkey",
+            p6_other5: "Cybersecurity", p6_other5_desc: "Business protection",
+            p6_other6: "Business Analytics", p6_other6_desc: "Big Data"
+        },
+        ru: {
+            nav_home: "Главная", nav_finance: "Финансы", nav_crypto: "Крипто", nav_exchange: "Биржа",
+            nav_insurance: "Страхование", nav_business: "Бизнес", nav_travel: "Туризм", nav_cards: "Карты", nav_buy: "Купить MasterCard",
+            hero_btn_mastercard: "🌐 MasterCard Global",
+            mastercard_banner_title: "🌐 Официальный сайт MasterCard Global",
+            mastercard_banner_desc: "Расширение экономических возможностей и расширение прав и возможностей людей. Инновационные решения для более безопасной, умной и цифровой экономики.",
+            mastercard_banner_btn: "Перейти на mastercard.com →",
+            footer_disclaimer: "⚠️ Данный проект является сообщественным и не аффилирован с Mastercard Incorporated. Криптовалютные инвестиции сопряжены с высоким риском. Всегда проводите собственное исследование (DYOR).",
+            p6_badge: "🏢 100+ бизнес-решений",
+            p6_title: "Бизнес", p6_title2: "услуги",
+            p6_desc: "B2B-платежи, зарплатные проекты, корпоративные карты, бухгалтерия и более 100 продуктов через MasterCard.",
+            p6_sec_title: "Все", p6_sec_title2: "бизнес-продукты", p6_sec_desc: "Более 100 инструментов для развития и управления бизнесом.",
+            p6_link_start: "Начать →",
+            p6_tag_pay: "Платежи", p6_tag_payroll: "Зарплата", p6_tag_acc: "Бухгалтерия", p6_tag_legal: "Юридические", p6_tag_tech: "Технологии", p6_tag_analytics: "Аналитика",
+            p6_b2b1: "B2B-платежи", p6_b2b1_desc: "Между юрлицами",
+            p6_b2b2: "Кросс-граничные платежи", p6_b2b2_desc: "Международные",
+            p6_b2b3: "Мгновенные платежи", p6_b2b3_desc: "Real-time",
+            p6_b2b4: "Платежные шлюзы", p6_b2b4_desc: "API для сайтов",
+            p6_b2b5: "Платежи через QR", p6_b2b5_desc: "Быстрая оплата",
+            p6_b2b6: "Электронные счета", p6_b2b6_desc: "Документооборот",
+            p6_pay1: "Зарплатные карты MasterCard", p6_pay1_desc: "Для сотрудников",
+            p6_pay2: "Корпоративные карты", p6_pay2_desc: "Для расходов",
+            p6_pay3: "Зарплата в криптовалюте", p6_pay3_desc: "USDC, MasterCard",
+            p6_pay4: "Расчёт зарплаты", p6_pay4_desc: "Калькулятор налогов",
+            p6_pay5: "Табель учёта", p6_pay5_desc: "Рабочее время",
+            p6_acc1: "Бухгалтерский учёт", p6_acc1_desc: "Проводки",
+            p6_acc2: "Налоговый учёт", p6_acc2_desc: "Расчёт налогов",
+            p6_acc3: "Сдача отчётности", p6_acc3_desc: "Электронная",
+            p6_acc4: "Первичные документы", p6_acc4_desc: "Счета, накладные",
+            p6_acc5: "Баланс и отчёты", p6_acc5_desc: "Финансовые отчёты",
+            p6_other1: "Регистрация бизнеса", p6_other1_desc: "ООО, ИП",
+            p6_other2: "Юридические консультации", p6_other2_desc: "Договоры",
+            p6_other3: "Автоматизация бизнеса", p6_other3_desc: "CRM, ERP",
+            p6_other4: "Разработка сайтов", p6_other4_desc: "Под ключ",
+            p6_other5: "Кибербезопасность", p6_other5_desc: "Защита бизнеса",
+            p6_other6: "Аналитика бизнеса", p6_other6_desc: "Big Data"
+        },
+        es: {}, fr: {}, zh: {}, ja: {}, ar: {}, hi: {}
+    };
+
+    let currentLang = localStorage.getItem('mastercardLang') || 'en';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('mastercardLang', lang);
+        document.querySelectorAll('#languageSwitcher a').forEach(el => {
+            el.classList.toggle('active', el.dataset.lang === lang);
+        });
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            const translation = translations[lang]?.[key];
+            if (translation !== undefined) el.textContent = translation;
+        });
+        document.documentElement.lang = lang;
+    }
+
+    document.querySelectorAll('#languageSwitcher a').forEach(el => {
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            setLanguage(this.dataset.lang);
+        });
+    });
+
+    const faders = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    faders.forEach(el => observer.observe(el));
+
+    setLanguage(currentLang);
+</script>
+</body>
+</html>
