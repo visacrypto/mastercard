@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MasterCard – Interbank Settlement Token on Solana</title>
+    <meta name="description" content="MasterCard – Multi-Asset Settlement Token. Interbank bridge between TradFi and DeFi on Solana." />
+    <link rel="icon" href="mc-favicon.png" type="image/png" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="MasterCard Token on Solana" />
+    <meta property="og:description" content="Multi-Asset Settlement Token – interbank bridge between TradFi and DeFi." />
+    <meta property="og:image" content="mc-og-image.jpg" />
+    <meta property="og:url" content="https://mastercard-token.github.io/mastercard/" />
+    <meta property="og:type" content="website" />
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0a0a1a;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        a { color: #f7931a; text-decoration: none; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+        .lang-bar {
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 8px 0;
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        .lang-bar .container { display: flex; justify-content: flex-end; gap: 12px; flex-wrap: wrap; }
+        .lang-bar a { color: #7a84a3; transition: color 0.3s, background 0.3s; font-weight: 500; padding: 4px 12px; border-radius: 4px; cursor: pointer; }
+        .lang-bar a:hover { color: #ffffff; background: rgba(255,255,255,0.06); }
+        .lang-bar a.active { color: #f7931a; background: rgba(247,147,26,0.12); }
+
+        .bg-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: radial-gradient(ellipse at 20% 50%, #1a1a4e, #0a0a1a 70%);
+            overflow: hidden;
+        }
+        .bg-canvas::before {
+            content: ''; position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+            background: radial-gradient(circle at 30% 40%, rgba(247,147,26,0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(255,107,0,0.06) 0%, transparent 50%);
+            animation: bgPulse 12s ease-in-out infinite alternate;
+        }
+        @keyframes bgPulse { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-5%,-3%) scale(1.1); } }
+        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; animation: orbFloat 18s infinite alternate ease-in-out; }
+        .orb-1 { width: 500px; height: 500px; background: #f7931a; top: -10%; left: -5%; }
+        .orb-2 { width: 400px; height: 400px; background: #ff6b00; bottom: -10%; right: -5%; animation-delay: -6s; }
+        .orb-3 { width: 300px; height: 300px; background: #9945ff; top: 50%; left: 50%; animation-delay: -12s; }
+        .orb-4 { width: 350px; height: 350px; background: #ffd93d; top: 20%; right: 10%; animation-delay: -4s; }
+        .orb-5 { width: 250px; height: 250px; background: #00c8ff; bottom: 20%; left: 10%; animation-delay: -9s; }
+        @keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(60px,-40px) scale(1.2); } }
+
+        .ticker-wrap {
+            position: relative; z-index: 5; width: 100%; overflow: hidden;
+            background: rgba(255,255,255,0.03);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 10px 0;
+            white-space: nowrap;
+        }
+        .ticker {
+            display: inline-block;
+            animation: tickerScroll 30s linear infinite;
+            font-size: 14px;
+            font-weight: 500;
+            color: #b0b8d1;
+        }
+        .ticker span { margin: 0 40px; color: #f7931a; }
+        .ticker .highlight { color: #ff6b00; }
+        @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        header {
+            position: relative; z-index: 10; padding: 18px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            background: rgba(10,10,26,0.6);
+        }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .logo-wrap { display: flex; align-items: center; gap: 12px; }
+        .logo-wrap img { height: 44px; width: auto; }
+        .logo-wrap span {
+            font-weight: 700; font-size: 22px; letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #f7931a, #ff6b00);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .nav-links a {
+            font-size: 13px; font-weight: 500; color: #b0b8d1; transition: color 0.3s, background 0.3s;
+            padding: 6px 12px; border-radius: 8px;
+        }
+        .nav-links a:hover { color: #ffffff; background: rgba(255,255,255,0.05); }
+        .nav-links a.active { color: #f7931a; background: rgba(247,147,26,0.1); }
+        .btn-header {
+            background: linear-gradient(135deg, #f7931a, #ff6b00);
+            padding: 10px 28px; border-radius: 40px; font-weight: 600; font-size: 14px;
+            color: #fff !important; transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(247,147,26,0.3);
+        }
+        .btn-header:hover { transform: scale(1.04); box-shadow: 0 6px 30px rgba(247,147,26,0.5); }
+
+        .hero { position: relative; z-index: 5; padding: 60px 0 40px; min-height: 85vh; display: flex; align-items: center; }
+        .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .hero-content h1 { font-size: clamp(38px, 6vw, 64px); font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+        .hero-content h1 .highlight { background: linear-gradient(135deg, #f7931a, #ff6b00, #ffd93d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-content p { font-size: 18px; color: #b0b8d1; max-width: 520px; margin-bottom: 24px; }
+        .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn-primary {
+            background: linear-gradient(135deg, #f7931a, #ff6b00);
+            padding: 14px 36px; border-radius: 50px; font-weight: 600; font-size: 16px;
+            color: #fff; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 24px rgba(247,147,26,0.35); display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 40px rgba(247,147,26,0.5); }
+        .btn-secondary {
+            background: rgba(255,255,255,0.06); padding: 14px 32px; border-radius: 50px;
+            font-weight: 600; font-size: 16px; color: #fff; border: 1px solid rgba(255,255,255,0.12);
+            backdrop-filter: blur(4px); transition: background 0.3s, transform 0.2s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.12); transform: translateY(-3px); }
+        .hero-stats { display: flex; gap: 32px; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap; }
+        .hero-stats .num { font-size: 26px; font-weight: 700; color: #fff; }
+        .hero-stats .label { font-size: 13px; color: #7a84a3; }
+        .hero-visual video, .hero-visual img { width: 100%; max-width: 560px; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.06); }
+
+        .pool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+            position: relative; z-index: 5;
+        }
+        .pool-card {
+            background: rgba(255,255,255,0.03); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.06); border-radius: 20px;
+            padding: 24px 20px; transition: transform 0.3s, border-color 0.3s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .pool-card:hover { transform: translateY(-4px); border-color: rgba(247,147,26,0.25); }
+        .pool-card h4 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .pool-card p { color: #b0b8d1; font-size: 14px; margin-bottom: 4px; word-break: break-all; }
+        .pool-card .tag {
+            display: inline-block; background: rgba(247,147,26,0.08); color: #f7931a;
+            padding: 2px 14px; border-radius: 40px; font-size: 12px; font-weight: 600;
+            border: 1px solid rgba(247,147,26,0.08);
+        }
+        .pool-card .link-btn {
+            display: inline-block; margin-top: 12px; padding: 8px 20px;
+            background: linear-gradient(135deg, #f7931a, #ff6b00);
+            border-radius: 40px; font-size: 13px; font-weight: 600; color: #fff;
+            transition: transform 0.2s;
+        }
+        .pool-card .link-btn:hover { transform: scale(1.04); }
+
+        .section-title { text-align: center; margin-bottom: 48px; }
+        .section-title h2 { font-size: clamp(28px, 3.5vw, 40px); font-weight: 700; margin-bottom: 10px; }
+        .section-title p { color: #b0b8d1; max-width: 600px; margin: 0 auto; }
+        .badge {
+            display: inline-block; background: rgba(247,147,26,0.12); color: #f7931a;
+            padding: 4px 18px; border-radius: 40px; font-size: 13px; font-weight: 600;
+            letter-spacing: 0.5px; margin-bottom: 14px; border: 1px solid rgba(247,147,26,0.15);
+        }
+
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin: 32px 0; }
+        .card {
+            background: rgba(255,255,255,0.03); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.06); border-radius: 20px;
+            padding: 28px 22px; transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .card:hover { transform: translateY(-6px); border-color: rgba(247,147,26,0.25); box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+        .card .icon { font-size: 34px; margin-bottom: 12px; display: block; }
+        .card h3 { font-size: 19px; font-weight: 600; margin-bottom: 6px; }
+        .card p { color: #b0b8d1; font-size: 14px; margin-bottom: 12px; }
+        .card .tag { display: inline-block; background: rgba(247,147,26,0.08); color: #f7931a; padding: 2px 14px; border-radius: 40px; font-size: 12px; font-weight: 600; border: 1px solid rgba(247,147,26,0.08); }
+
+        .buy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0; }
+        .buy-item {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
+            padding: 16px 18px; text-align: center; transition: 0.3s;
+        }
+        .buy-item:hover { border-color: rgba(247,147,26,0.3); background: rgba(255,255,255,0.06); }
+        .buy-item a { font-weight: 600; font-size: 14px; display: block; }
+        .buy-item .sub { font-size: 12px; color: #7a84a3; }
+
+        .visa-europe-banner {
+            background: linear-gradient(135deg, rgba(26,26,78,0.8), rgba(10,10,26,0.8));
+            border: 1px solid rgba(247,147,26,0.15);
+            border-radius: 20px; padding: 32px 40px; margin: 40px 0;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;
+        }
+        .visa-europe-banner h3 { font-size: 22px; }
+        .visa-europe-banner p { color: #b0b8d1; max-width: 500px; }
+
+        footer { position: relative; z-index: 5; padding: 40px 0 24px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px; }
+        .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-inner p { color: #5a6380; font-size: 14px; }
+        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials a { color: #5a6380; font-size: 18px; transition: color 0.3s; }
+        .footer-socials a:hover { color: #ffffff; }
+        .footer-disclaimer { text-align: center; margin-top: 20px; font-size: 12px; color: #3a4360; max-width: 700px; margin-left: auto; margin-right: auto; }
+
+        @media (max-width: 968px) {
+            .hero-grid { grid-template-columns: 1fr; text-align: center; }
+            .hero-content p { margin-left: auto; margin-right: auto; }
+            .hero-buttons { justify-content: center; }
+            .hero-stats { justify-content: center; }
+            .hero-visual video, .hero-visual img { max-width: 100%; }
+            .visa-europe-banner { flex-direction: column; text-align: center; }
+        }
+        @media (max-width: 600px) {
+            .nav-links { gap: 8px; }
+            .btn-header { padding: 8px 18px; font-size: 13px; }
+            .card { padding: 20px 16px; }
+            .ticker { font-size: 12px; }
+        }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="lang-bar">
+        <div class="container" id="languageSwitcher">
+            <a data-lang="en" class="active">English</a>
+            <a data-lang="ru">Русский</a>
+            <a data-lang="es">Español</a>
+            <a data-lang="fr">Français</a>
+            <a data-lang="zh">中文</a>
+            <a data-lang="ja">日本語</a>
+            <a data-lang="ar">العربية</a>
+            <a data-lang="hi">हिन्दी</a>
+        </div>
+    </div>
+
+    <div class="bg-canvas">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+        <div class="orb orb-5"></div>
+    </div>
+
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <span>🚀 MasterCard Token — Interbank Settlement Asset</span>
+            <span>💰 Price: $0.02</span>
+            <span>📊 Total Supply: 184,000,000,000</span>
+            <span>🔄 Fee: 0.05%</span>
+            <span>💳 Cashback: 2%</span>
+            <span>🏦 Pools: MasterCard/EURI · MasterCard/USDT · VISA/MasterCard</span>
+            <span>🌐 Visa in Europe: <a href="https://www.visa.co.uk/about-visa/visa-in-europe.html" target="_blank" style="color:#f7931a;">visa.co.uk</a></span>
+            <span>🚀 MasterCard Token — Interbank Settlement Asset</span>
+            <span>💰 Price: $0.02</span>
+            <span>📊 Total Supply: 184,000,000,000</span>
+            <span>🔄 Fee: 0.05%</span>
+            <span>💳 Cashback: 2%</span>
+            <span>🏦 Pools: MasterCard/EURI · MasterCard/USDT · VISA/MasterCard</span>
+            <span>🌐 Visa in Europe: <a href="https://www.visa.co.uk/about-visa/visa-in-europe.html" target="_blank" style="color:#f7931a;">visa.co.uk</a></span>
+        </div>
+    </div>
+
+    <header>
+        <div class="container header-inner">
+            <div class="logo-wrap">
+                <img src="mc-logo-primary.png" alt="MasterCard Logo" />
+                <span>MasterCard</span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html" class="active" data-i18n="nav_home">Home</a>
+                <a href="#about" data-i18n="nav_about">About</a>
+                <a href="#features" data-i18n="nav_features">Features</a>
+                <a href="#tokenomics" data-i18n="nav_tokenomics">Tokenomics</a>
+                <a href="#pools" data-i18n="nav_pools">Pools</a>
+                <a href="#buy" class="btn-header" data-i18n="nav_buy">Buy MasterCard</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" id="about">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="badge" data-i18n="hero_badge">🔥 Multi-Asset Settlement Token</div>
+                <h1>
+                    <span data-i18n="hero_title_part1">MasterCard</span> <br />
+                    <span class="highlight" data-i18n="hero_title_part2">on Solana</span>
+                </h1>
+                <p data-i18n="hero_desc">Interbank bridge between Traditional Finance and DeFi. Solana speed + MasterCard reliability. Cashback 2%, 0.05% fee.</p>
+                <div class="hero-buttons">
+                    <a href="#buy" class="btn-primary" data-i18n="hero_btn_buy">🚀 Buy MasterCard</a>
+                    <a href="#features" class="btn-secondary" data-i18n="hero_btn_features">⚡ Features</a>
+                    <a href="https://www.visa.co.uk/about-visa/visa-in-europe.html" target="_blank" class="btn-secondary" data-i18n="hero_btn_visa">🌐 Visa in Europe</a>
+                </div>
+                <div class="hero-stats">
+                    <div><div class="num">184B</div><div class="label" data-i18n="stat_supply">Total Supply</div></div>
+                    <div><div class="num">$0.02</div><div class="label" data-i18n="stat_price">Price</div></div>
+                    <div><div class="num">0.05%</div><div class="label" data-i18n="stat_fee">Transfer Fee</div></div>
+                    <div><div class="num">2%</div><div class="label" data-i18n="stat_cashback">Cashback</div></div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <video autoplay loop muted playsinline poster="mc-hero-banner.jpg">
+                    <source src="mc-teaser.mp4" type="video/mp4">
+                    <img src="mc-hero-banner.jpg" alt="MasterCard Hero Banner" />
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <section id="pools" class="container" style="position:relative;z-index:5;padding:20px 0;">
+        <div class="section-title fade-in">
+            <span class="badge">💧 Liquidity Pools</span>
+            <h2>Trade <span style="color:#f7931a;">MasterCard</span></h2>
+            <p>Three pools for liquidity and easy buying.</p>
+        </div>
+        <div class="pool-grid">
+            <div class="pool-card fade-in">
+                <h4>🌊 Pool <span style="color:#f7931a;">MasterCard/EURI</span></h4>
+                <p><strong>Pair:</strong> MasterCard / EURI</p>
+                <p><strong>Address:</strong> <span style="font-size:12px;color:#b0b8d1;">4LBo5HKyDxWKDqj1bySktvPqCrafyshqcyuAjnc4qTe8</span></p>
+                <p><strong>Exchange:</strong> Meteora DAMM V2</p>
+                <span class="tag">🔗 Liquidity</span>
+                <a href="https://www.geckoterminal.com/solana/pools/4LBo5HKyDxWKDqj1bySktvPqCrafyshqcyuAjnc4qTe8" target="_blank" class="link-btn">View Pool →</a>
+            </div>
+            <div class="pool-card fade-in">
+                <h4>🔄 Pool <span style="color:#ff6b00;">VISA/MasterCard</span></h4>
+                <p><strong>Pair:</strong> VISA / MasterCard</p>
+                <p><strong>Address:</strong> <span style="font-size:12px;color:#b0b8d1;">BhJSFRcXtEgkrHXyKqRMX2WrDq3aHx1NLHdgwFYy1B9A</span></p>
+                <p><strong>Exchange:</strong> Meteora DAMM V2</p>
+                <span class="tag">🔄 Dual Token</span>
+                <a href="https://www.geckoterminal.com/solana/pools/BhJSFRcXtEgkrHXyKqRMX2WrDq3aHx1NLHdgwFYy1B9A" target="_blank" class="link-btn">View Pool →</a>
+            </div>
+            <div class="pool-card fade-in">
+                <h4>🛒 Buy Pool <span style="color:#ffd93d;">MasterCard/USDT</span></h4>
+                <p><strong>Pair:</strong> MasterCard / USDT</p>
+                <p><strong>Address:</strong> <span style="font-size:12px;color:#b0b8d1;">5svM5R1h2nFx9YkwRNAdSXaoieDxC4ebZnzAS5yZdiFy</span></p>
+                <p><strong>Exchange:</strong> Meteora DAMM V2</p>
+                <span class="tag">🛒 Buy MasterCard</span>
+                <a href="https://www.geckoterminal.com/solana/pools/5svM5R1h2nFx9YkwRNAdSXaoieDxC4ebZnzAS5yZdiFy" target="_blank" class="link-btn">Buy MasterCard →</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="container" style="position:relative;z-index:5;padding:20px 0;">
+        <div class="section-title fade-in">
+            <span class="badge" data-i18n="features_badge">⚡ 100+ Features</span>
+            <h2><span data-i18n="features_title">Ecosystem</span> <span style="color:#f7931a;">MasterCard</span></h2>
+            <p data-i18n="features_desc">All capabilities of interbank finance and DeFi in one token.</p>
+        </div>
+        <div class="cards-grid">
+            <div class="card fade-in">
+                <span class="icon">🏦</span>
+                <h3 data-i18n="card1_title">Interbank Bridge</h3>
+                <p data-i18n="card1_desc">Connect banks and financial institutions via Solana.</p>
+                <span class="tag" data-i18n="card1_tag">B2B</span>
+            </div>
+            <div class="card fade-in">
+                <span class="icon">💳</span>
+                <h3 data-i18n="card2_title">2% Cashback</h3>
+                <p data-i18n="card2_desc">Earn 2% back on every transaction with MasterCard.</p>
+                <span class="tag" data-i18n="card2_tag">Rewards</span>
+            </div>
+            <div class="card fade-in">
+                <span class="icon">📊</span>
+                <h3 data-i18n="card3_title">0.05% Fee</h3>
+                <p data-i18n="card3_desc">Minimal transfer fee — lower than any bank.</p>
+                <span class="tag" data-i18n="card3_tag">Saving</span>
+            </div>
+            <div class="card fade-in">
+                <span class="icon">🗳️</span>
+                <h3 data-i18n="card4_title">DAO Governance</h3>
+                <p data-i18n="card4_desc">Vote on fees, cashback rates, and new pools.</p>
+                <span class="tag" data-i18n="card4_tag">Governance</span>
+            </div>
+            <div class="card fade-in">
+                <span class="icon">🌐</span>
+                <h3 data-i18n="card5_title">Cross-Currency Bridge</h3>
+                <p data-i18n="card5_desc">Exchange 50+ currencies with no slippage.</p>
+                <span class="tag" data-i18n="card5_tag">Bridge</span>
+            </div>
+            <div class="card fade-in">
+                <span class="icon">🏪</span>
+                <h3 data-i18n="card6_title">POS Integration</h3>
+                <p data-i18n="card6_desc">Pay with MasterCard token at millions of stores worldwide.</p>
+                <span class="tag" data-i18n="card6_tag">Payments</span>
+            </div>
+            <div class="card fade-in">
+                <span class="icon">🔐</span>
+                <h3 data-i18n="card7_title">SBLC & Guarantees</h3>
+                <p data-i18n="card7_desc">Bank guarantees and standby credits on blockchain.</p>
+                <span class="tag" data-i18n="card7_tag">Finance</span>
+            </div>
+            <div class="card fade-in">
+                <span class="icon">🧾</span>
+                <h3 data-i18n="card8_title">RWA Tokenization</h3>
+                <p data-i18n="card8_desc">Tokenize real estate, metals, oil into digital assets.</p>
+                <span class="tag" data-i18n="card8_tag">RWA</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="tokenomics" class="container" style="position:relative;z-index:5;padding:20px 0;">
+        <div class="section-title fade-in">
+            <span class="badge" data-i18n="tokenomics_badge">📊 Distribution</span>
+            <h2><span data-i18n="tokenomics_title">Tokenomics</span> <span style="color:#f7931a;">MasterCard</span></h2>
+            <p data-i18n="tokenomics_desc">184,000,000,000 tokens with transparent distribution.</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:center;justify-content:center;">
+            <img src="mc-tokenomics.jpg" alt="MasterCard Tokenomics" style="max-width:500px;width:100%;border-radius:20px;border:1px solid rgba(255,255,255,0.06);box-shadow:0 12px 40px rgba(0,0,0,0.3);" />
+            <div style="min-width:280px;flex:1;">
+                <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:#b0b8d1;">🌊 Liquidity (Pinksale)</span><span style="font-weight:600;">40% – 73.6B</span></div>
+                <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:#b0b8d1;">📢 Marketing</span><span style="font-weight:600;">20% – 36.8B</span></div>
+                <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:#b0b8d1;">👥 Team (lock 12 mo)</span><span style="font-weight:600;">15% – 27.6B</span></div>
+                <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:#b0b8d1;">⚡ Staking Pool</span><span style="font-weight:600;">15% – 27.6B</span></div>
+                <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:#b0b8d1;">🔧 Ecosystem Development</span><span style="font-weight:600;">10% – 18.4B</span></div>
+                <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:#b0b8d1;">💰 Starting Price</span><span style="font-weight:600;">$0.02</span></div>
+                <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:#b0b8d1;">🔄 Transfer Fee</span><span style="font-weight:600;">0.05%</span></div>
+                <div style="display:flex;justify-content:space-between;padding:12px 0;"><span style="color:#b0b8d1;">💳 Cashback</span><span style="font-weight:600;color:#f7931a;">2%</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="buy" class="container" style="position:relative;z-index:5;padding:20px 0 40px;">
+        <div class="section-title fade-in">
+            <span class="badge" data-i18n="buy_badge">🛒 10+ Ways</span>
+            <h2><span data-i18n="buy_title">Buy</span> <span style="color:#f7931a;">MasterCard</span></h2>
+            <p data-i18n="buy_desc">Choose a convenient service to purchase MasterCard tokens.</p>
+        </div>
+        <div class="buy-grid">
+            <div class="buy-item"><a href="https://jup.ag/swap/USDC-MasterCard" target="_blank">🔄 Jupiter</a><div class="sub" data-i18n="buy_agg">Aggregator</div></div>
+            <div class="buy-item"><a href="https://raydium.io/swap/?inputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&outputMint=CXm6Srqi3Lq4Xza8zPiyYCZEzVh6tQ6kUki2jvAUnxpt" target="_blank">💧 Raydium</a><div class="sub">AMM</div></div>
+            <div class="buy-item"><a href="https://www.orca.so/swap?input=USDC&output=CXm6Srqi3Lq4Xza8zPiyYCZEzVh6tQ6kUki2jvAUnxpt" target="_blank">🐠 Orca</a><div class="sub" data-i18n="buy_cl">Concentrated Liquidity</div></div>
+            <div class="buy-item"><a href="https://www.meteora.ag/pools/5svM5R1h2nFx9YkwRNAdSXaoieDxC4ebZnzAS5yZdiFy" target="_blank">🌐 Meteora</a><div class="sub">DLMM</div></div>
+            <div class="buy-item"><a href="https://t.me/bonkbot_bot" target="_blank">🤖 BonkBot</a><div class="sub">Telegram</div></div>
+            <div class="buy-item"><a href="https://t.me/trojan_bot" target="_blank">⚡ Trojan</a><div class="sub">Telegram</div></div>
+            <div class="buy-item"><a href="https://pump.fun" target="_blank">🎯 Pump.fun</a><div class="sub">Launchpad</div></div>
+            <div class="buy-item"><a href="https://dexscreener.com/solana/..." target="_blank">📈 DexScreener</a><div class="sub" data-i18n="buy_charts">Charts</div></div>
+            <div class="buy-item"><a href="https://app.step.finance/swap" target="_blank">📊 Step Finance</a><div class="sub" data-i18n="buy_portfolio">Portfolio</div></div>
+            <div class="buy-item"><a href="https://app.saber.so/#/pools" target="_blank">⚔️ Saber</a><div class="sub" data-i18n="buy_stable">Stable Swap</div></div>
+            <div class="buy-item"><a href="#" onclick="alert('Open Solflare and choose Swap')">🦊 Solflare</a><div class="sub" data-i18n="buy_swap">Built-in Swap</div></div>
+            <div class="buy-item"><a href="#" onclick="alert('Open Phantom and choose Swap')">👻 Phantom</a><div class="sub" data-i18n="buy_swap">Built-in Swap</div></div>
+        </div>
+    </section>
+
+    <div class="container" style="position:relative;z-index:5;">
+        <div class="visa-europe-banner">
+            <div>
+                <h3 data-i18n="visa_banner_title">🌐 Official <span style="color:#f7931a;">Visa in Europe</span></h3>
+                <p data-i18n="visa_banner_desc">Learn more about Visa's business, governance, and regulatory framework in Europe.</p>
+            </div>
+            <a href="https://www.visa.co.uk/about-visa/visa-in-europe.html" target="_blank" class="btn-primary" style="flex-shrink:0;" data-i18n="visa_banner_btn">Visit visa.co.uk →</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <div class="logo-wrap">
+                    <img src="mc-logo-primary.png" alt="MasterCard" style="height:32px;" />
+                    <span style="font-size:16px;background:linear-gradient(135deg,#f7931a,#ff6b00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">MasterCard</span>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://www.visa.co.uk/about-visa/visa-in-europe.html" target="_blank">🌐 Visa in Europe</a>
+                    <a href="https://twitter.com/visa" target="_blank">🐦 X</a>
+                    <a href="https://t.me/visa_official" target="_blank">💬 Telegram</a>
+                </div>
+            </div>
+            <div class="footer-disclaimer" data-i18n="footer_disclaimer">
+                ⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR).
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            en: {
+                nav_home: "Home", nav_about: "About", nav_features: "Features", nav_tokenomics: "Tokenomics", nav_pools: "Pools", nav_buy: "Buy MasterCard",
+                hero_badge: "🔥 Multi-Asset Settlement Token",
+                hero_title_part1: "MasterCard", hero_title_part2: "on Solana",
+                hero_desc: "Interbank bridge between Traditional Finance and DeFi. Solana speed + MasterCard reliability. Cashback 2%, 0.05% fee.",
+                hero_btn_buy: "🚀 Buy MasterCard", hero_btn_features: "⚡ Features", hero_btn_visa: "🌐 Visa in Europe",
+                stat_supply: "Total Supply", stat_price: "Price", stat_fee: "Transfer Fee", stat_cashback: "Cashback",
+                features_badge: "⚡ 100+ Features", features_title: "Ecosystem", features_desc: "All capabilities of interbank finance and DeFi in one token.",
+                card1_title: "Interbank Bridge", card1_desc: "Connect banks and financial institutions via Solana.", card1_tag: "B2B",
+                card2_title: "2% Cashback", card2_desc: "Earn 2% back on every transaction with MasterCard.", card2_tag: "Rewards",
+                card3_title: "0.05% Fee", card3_desc: "Minimal transfer fee — lower than any bank.", card3_tag: "Saving",
+                card4_title: "DAO Governance", card4_desc: "Vote on fees, cashback rates, and new pools.", card4_tag: "Governance",
+                card5_title: "Cross-Currency Bridge", card5_desc: "Exchange 50+ currencies with no slippage.", card5_tag: "Bridge",
+                card6_title: "POS Integration", card6_desc: "Pay with MasterCard token at millions of stores worldwide.", card6_tag: "Payments",
+                card7_title: "SBLC & Guarantees", card7_desc: "Bank guarantees and standby credits on blockchain.", card7_tag: "Finance",
+                card8_title: "RWA Tokenization", card8_desc: "Tokenize real estate, metals, oil into digital assets.", card8_tag: "RWA",
+                tokenomics_badge: "📊 Distribution", tokenomics_title: "Tokenomics", tokenomics_desc: "184,000,000,000 tokens with transparent distribution.",
+                buy_badge: "🛒 10+ Ways", buy_title: "Buy", buy_desc: "Choose a convenient service to purchase MasterCard tokens.",
+                buy_agg: "Aggregator", buy_cl: "Concentrated Liquidity", buy_charts: "Charts", buy_portfolio: "Portfolio", buy_stable: "Stable Swap", buy_swap: "Built-in Swap",
+                visa_banner_title: "🌐 Official Visa in Europe", visa_banner_desc: "Learn more about Visa's business, governance, and regulatory framework in Europe.",
+                visa_banner_btn: "Visit visa.co.uk →",
+                footer_disclaimer: "⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR)."
+            },
+            ru: {
+                nav_home: "Главная", nav_about: "О токене", nav_features: "Возможности", nav_tokenomics: "Токеномика", nav_pools: "Пулы", nav_buy: "Купить MasterCard",
+                hero_badge: "🔥 Мультиактивный расчетный токен",
+                hero_title_part1: "MasterCard", hero_title_part2: "на Solana",
+                hero_desc: "Межбанковский мост между традиционными финансами и DeFi. Скорость Solana + надёжность MasterCard. Кэшбэк 2%, комиссия 0.05%.",
+                hero_btn_buy: "🚀 Купить MasterCard", hero_btn_features: "⚡ Возможности", hero_btn_visa: "🌐 Visa в Европе",
+                stat_supply: "Общая эмиссия", stat_price: "Цена", stat_fee: "Комиссия", stat_cashback: "Кэшбэк",
+                features_badge: "⚡ 100+ функций", features_title: "Экосистема", features_desc: "Все возможности межбанковских финансов и DeFi в одном токене.",
+                card1_title: "Межбанковский мост", card1_desc: "Связь между банками и финансовыми институтами через Solana.", card1_tag: "B2B",
+                card2_title: "Кэшбэк 2%", card2_desc: "Получай 2% назад за каждую транзакцию с MasterCard.", card2_tag: "Награды",
+                card3_title: "Комиссия 0.05%", card3_desc: "Минимальная плата за перевод — меньше чем в любом банке.", card3_tag: "Экономия",
+                card4_title: "DAO-голосование", card4_desc: "Влияй на комиссии, ставки кэшбэка и новые пулы.", card4_tag: "Управление",
+                card5_title: "Кросс-валютный мост", card5_desc: "Обмен 50+ валют без проскальзывания.", card5_tag: "Мост",
+                card6_title: "Интеграция с POS", card6_desc: "Оплачивай токеном MasterCard в миллионах магазинов.", card6_tag: "Платежи",
+                card7_title: "SBLC и гарантии", card7_desc: "Банковские гарантии и резервные аккредитивы на блокчейне.", card7_tag: "Финансы",
+                card8_title: "Токенизация RWA", card8_desc: "Превращай недвижимость, металлы, нефть в цифровые активы.", card8_tag: "RWA",
+                tokenomics_badge: "📊 Распределение", tokenomics_title: "Токеномика", tokenomics_desc: "184 000 000 000 токенов с прозрачным распределением.",
+                buy_badge: "🛒 10+ способов", buy_title: "Купить", buy_desc: "Выбери удобный сервис для покупки токена MasterCard.",
+                buy_agg: "Агрегатор", buy_cl: "Концентрированная ликвидность", buy_charts: "Графики", buy_portfolio: "Портфель", buy_stable: "Stable Swap", buy_swap: "Встроенный своп",
+                visa_banner_title: "🌐 Официальный сайт Visa в Европе", visa_banner_desc: "Узнайте больше о бизнесе, управлении и регулировании Visa в Европе.",
+                visa_banner_btn: "Перейти на visa.co.uk →",
+                footer_disclaimer: "⚠️ Данный проект является сообщественным и не аффилирован с Mastercard Incorporated. Криптовалютные инвестиции сопряжены с высоким риском. Всегда проводите собственное исследование (DYOR)."
+            },
+            es: {}, fr: {}, zh: {}, ja: {}, ar: {}, hi: {}
+        };
+
+        let currentLang = localStorage.getItem('mastercardLang') || 'en';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('mastercardLang', lang);
+            document.querySelectorAll('#languageSwitcher a').forEach(el => {
+                el.classList.toggle('active', el.dataset.lang === lang);
+            });
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                const translation = translations[lang]?.[key];
+                if (translation !== undefined) el.textContent = translation;
+            });
+            document.documentElement.lang = lang;
+        }
+
+        document.querySelectorAll('#languageSwitcher a').forEach(el => {
+            el.addEventListener('click', function(e) {
+                e.preventDefault();
+                setLanguage(this.dataset.lang);
+            });
+        });
+
+        const faders = document.querySelectorAll('.fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.15 });
+        faders.forEach(el => observer.observe(el));
+
+        setLanguage(currentLang);
+    </script>
+
+</body>
+</html>
