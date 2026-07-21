@@ -158,4 +158,435 @@
             width: 100%;
         }
         .calc-row input:focus { outline: none; border-color: #eb001b; }
-        .calc-result { margin
+        .calc-result { margin-top: 16px; font-size: 20px; font-weight: 700; color: #eb001b; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+            padding: 12px 32px; border-radius: 50px; font-weight: 600; font-size: 15px;
+            color: #fff; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 24px rgba(235,0,27,0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(235,0,27,0.5); }
+
+        .mastercard-global-banner {
+            background: linear-gradient(135deg, rgba(26,26,78,0.8), rgba(10,10,26,0.8));
+            border: 1px solid rgba(235,0,27,0.15);
+            border-radius: 20px; padding: 32px 40px; margin: 40px 0;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;
+        }
+        .mastercard-global-banner h3 { font-size: 22px; }
+        .mastercard-global-banner p { color: #b0b8d1; max-width: 500px; }
+
+        footer {
+            position: relative; z-index: 5; padding: 40px 0 24px;
+            border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px;
+        }
+        .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-inner p { color: #5a6380; font-size: 14px; }
+        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials a { color: #5a6380; font-size: 18px; transition: color 0.3s; }
+        .footer-socials a:hover { color: #fff; }
+        .footer-disclaimer { text-align: center; margin-top: 20px; font-size: 12px; color: #3a4360; max-width: 700px; margin-left: auto; margin-right: auto; }
+
+        @media (max-width: 600px) {
+            .nav-links { gap: 8px; }
+            .nav-links a { font-size: 12px; padding: 4px 8px; }
+            .cards-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .calc-row { flex-direction: column; }
+            .mastercard-global-banner { flex-direction: column; text-align: center; }
+            .ticker { font-size: 12px; }
+        }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="lang-bar">
+    <div class="container" id="languageSwitcher">
+        <a data-lang="en" class="active">English</a>
+        <a data-lang="ru">Русский</a>
+        <a data-lang="es">Español</a>
+        <a data-lang="fr">Français</a>
+        <a data-lang="zh">中文</a>
+        <a data-lang="ja">日本語</a>
+        <a data-lang="ar">العربية</a>
+        <a data-lang="hi">हिन्दी</a>
+    </div>
+</div>
+
+<div class="bg-canvas">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+</div>
+
+<div class="ticker-wrap">
+    <div class="ticker">
+        <span>📈 S&P 500 — $5,900</span>
+        <span>🛢️ Brent — $82.50</span>
+        <span>🥇 Gold — $2,350</span>
+        <span>🌾 Wheat — $620</span>
+        <span>⚡ Electricity — $45/MWh</span>
+        <span>🔥 Natural Gas — $2.80</span>
+        <span>📈 S&P 500 — $5,900</span>
+        <span>🛢️ Brent — $82.50</span>
+        <span>🥇 Gold — $2,350</span>
+        <span>🌾 Wheat — $620</span>
+        <span>⚡ Electricity — $45/MWh</span>
+        <span>🔥 Natural Gas — $2.80</span>
+    </div>
+</div>
+
+<header>
+    <div class="container header-inner">
+        <div class="logo-wrap">
+            <img src="mc-logo-primary.png" alt="MasterCard" />
+            <span>MasterCard</span>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Home</a>
+            <a href="page2.html" data-i18n="nav_finance">Finance</a>
+            <a href="page3.html" data-i18n="nav_crypto">Crypto</a>
+            <a href="page4.html" class="active" data-i18n="nav_exchange">Exchange</a>
+            <a href="page5.html" data-i18n="nav_insurance">Insurance</a>
+            <a href="page6.html" data-i18n="nav_business">Business</a>
+            <a href="page7.html" data-i18n="nav_travel">Travel</a>
+            <a href="page8.html" data-i18n="nav_cards">Cards</a>
+            <a href="index.html#buy" class="btn-header" data-i18n="nav_buy">Buy MasterCard</a>
+        </nav>
+    </div>
+</header>
+
+<section class="page-hero">
+    <div class="container">
+        <div class="badge" data-i18n="p4_badge">📈 100+ Trading Products</div>
+        <h1><span data-i18n="p4_title">Exchange</span> <span data-i18n="p4_title2">Trading</span></h1>
+        <p data-i18n="p4_desc">Stocks, oil, gas, metals, grain, timber, coal, electricity and more than 100 products through MasterCard.</p>
+        <div style="margin-top:16px;">
+            <a href="https://www.mastercard.com/global/en.html" target="_blank" class="btn-secondary" data-i18n="hero_btn_mastercard" style="display:inline-block;">🌐 MasterCard Global</a>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="calculator-section fade-in">
+        <h3 data-i18n="p4_calc_title">📊 Trading Profit Calculator</h3>
+        <div class="calc-row">
+            <label data-i18n="p4_calc_amount">Investment ($)<input type="number" id="tradeAmount" value="10000" /></label>
+            <label data-i18n="p4_calc_entry">Entry Price ($)<input type="number" id="entryPrice" value="100" /></label>
+            <label data-i18n="p4_calc_exit">Exit Price ($)<input type="number" id="exitPrice" value="120" /></label>
+            <button class="btn-primary" onclick="calcTrade()" data-i18n="p4_calc_btn">Calculate</button>
+        </div>
+        <div class="calc-result" id="tradeResult">Profit: $2,000.00 | ROI: 20.00%</div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="section-title fade-in">
+        <h2><span data-i18n="p4_sec_title">All</span> <span style="color:#eb001b;" data-i18n="p4_sec_title2">Trading Products</span></h2>
+        <p data-i18n="p4_sec_desc">Stocks, commodities, energy and more than 100 instruments through MasterCard.</p>
+    </div>
+    <div class="cards-grid">
+        <!-- STOCKS -->
+        <div class="card fade-in"><span class="icon">🏦</span><h4 data-i18n="p4_stock1">S&P 500 Stocks</h4><p data-i18n="p4_stock1_desc">USA</p><span class="tag" data-i18n="p4_tag_stock">Stocks</span><a href="https://www.tradingview.com/symbols/SPX/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🏛️</span><h4 data-i18n="p4_stock2">NASDAQ Stocks</h4><p data-i18n="p4_stock2_desc">Technology</p><span class="tag" data-i18n="p4_tag_stock">Stocks</span><a href="https://www.tradingview.com/symbols/NDX/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🌍</span><h4 data-i18n="p4_stock3">MOEX Stocks</h4><p data-i18n="p4_stock3_desc">Russia</p><span class="tag" data-i18n="p4_tag_stock">Stocks</span><a href="https://www.tradingview.com/symbols/MOEX/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🏯</span><h4 data-i18n="p4_stock4">Tokyo Stocks</h4><p data-i18n="p4_stock4_desc">Japan</p><span class="tag" data-i18n="p4_tag_stock">Stocks</span><a href="https://www.tradingview.com/symbols/NIKKEI/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🐉</span><h4 data-i18n="p4_stock5">Shanghai Stocks</h4><p data-i18n="p4_stock5_desc">China</p><span class="tag" data-i18n="p4_tag_stock">Stocks</span><a href="https://www.tradingview.com/symbols/SSE/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🇪🇺</span><h4 data-i18n="p4_stock6">Euro Stocks</h4><p data-i18n="p4_stock6_desc">EURO STOXX 50</p><span class="tag" data-i18n="p4_tag_stock">Stocks</span><a href="https://www.tradingview.com/symbols/EU50/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🇬🇧</span><h4 data-i18n="p4_stock7">FTSE 100 Stocks</h4><p data-i18n="p4_stock7_desc">UK</p><span class="tag" data-i18n="p4_tag_stock">Stocks</span><a href="https://www.tradingview.com/symbols/FTSE/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🇩🇪</span><h4 data-i18n="p4_stock8">DAX 40 Stocks</h4><p data-i18n="p4_stock8_desc">Germany</p><span class="tag" data-i18n="p4_tag_stock">Stocks</span><a href="https://www.tradingview.com/symbols/DAX/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🇫🇷</span><h4 data-i18n="p4_stock9">CAC 40 Stocks</h4><p data-i18n="p4_stock9_desc">France</p><span class="tag" data-i18n="p4_tag_stock">Stocks</span><a href="https://www.tradingview.com/symbols/CAC/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🇮🇳</span><h4 data-i18n="p4_stock10">NIFTY 50 Stocks</h4><p data-i18n="p4_stock10_desc">India</p><span class="tag" data-i18n="p4_tag_stock">Stocks</span><a href="https://www.tradingview.com/symbols/NIFTY/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🇦🇺</span><h4 data-i18n="p4_stock11">ASX 200 Stocks</h4><p data-i18n="p4_stock11_desc">Australia</p><span class="tag" data-i18n="p4_tag_stock">Stocks</span><a href="https://www.tradingview.com/symbols/ASX/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🇨🇦</span><h4 data-i18n="p4_stock12">TSX 60 Stocks</h4><p data-i18n="p4_stock12_desc">Canada</p><span class="tag" data-i18n="p4_tag_stock">Stocks</span><a href="https://www.tradingview.com/symbols/TSX/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+
+        <!-- OIL & GAS -->
+        <div class="card fade-in"><span class="icon">🛢️</span><h4 data-i18n="p4_oil1">Brent Oil</h4><p data-i18n="p4_oil1_desc">Brent crude</p><span class="tag" data-i18n="p4_tag_oil">Oil</span><a href="https://www.tradingview.com/symbols/BRENT/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🛢️</span><h4 data-i18n="p4_oil2">WTI Oil</h4><p data-i18n="p4_oil2_desc">WTI crude</p><span class="tag" data-i18n="p4_tag_oil">Oil</span><a href="https://www.tradingview.com/symbols/WTI/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🛢️</span><h4 data-i18n="p4_oil3">Urals Oil</h4><p data-i18n="p4_oil3_desc">Russia</p><span class="tag" data-i18n="p4_tag_oil">Oil</span><a href="https://www.tradingview.com/symbols/URALS/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🛢️</span><h4 data-i18n="p4_oil4">Dubai Oil</h4><p data-i18n="p4_oil4_desc">UAE</p><span class="tag" data-i18n="p4_tag_oil">Oil</span><a href="https://www.tradingview.com/symbols/DUBAI/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🔥</span><h4 data-i18n="p4_gas1">Natural Gas</h4><p data-i18n="p4_gas1_desc">Henry Hub</p><span class="tag" data-i18n="p4_tag_gas">Gas</span><a href="https://www.tradingview.com/symbols/XNG/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🔥</span><h4 data-i18n="p4_gas2">LNG</h4><p data-i18n="p4_gas2_desc">Liquefied gas</p><span class="tag" data-i18n="p4_tag_gas">Gas</span><a href="https://www.tradingview.com/symbols/LNG/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🧪</span><h4 data-i18n="p4_petro1">Gasoline</h4><p data-i18n="p4_petro1_desc">Rbob Gasoline</p><span class="tag" data-i18n="p4_tag_petro">Petrochem</span><a href="https://www.tradingview.com/symbols/RB/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🧪</span><h4 data-i18n="p4_petro2">Diesel</h4><p data-i18n="p4_petro2_desc">Heating Oil</p><span class="tag" data-i18n="p4_tag_petro">Petrochem</span><a href="https://www.tradingview.com/symbols/HO/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🧪</span><h4 data-i18n="p4_petro3">Propane</h4><p data-i18n="p4_petro3_desc">LPG</p><span class="tag" data-i18n="p4_tag_petro">Petrochem</span><a href="https://www.tradingview.com/symbols/PROPANE/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🧪</span><h4 data-i18n="p4_petro4">Ethylene</h4><p data-i18n="p4_petro4_desc">Plastic feedstock</p><span class="tag" data-i18n="p4_tag_petro">Petrochem</span><a href="https://www.tradingview.com/symbols/ETHYLENE/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🧪</span><h4 data-i18n="p4_petro5">Polypropylene</h4><p data-i18n="p4_petro5_desc">Plastic</p><span class="tag" data-i18n="p4_tag_petro">Petrochem</span><a href="https://www.tradingview.com/symbols/PP/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🧪</span><h4 data-i18n="p4_petro6">Polyethylene</h4><p data-i18n="p4_petro6_desc">Plastic</p><span class="tag" data-i18n="p4_tag_petro">Petrochem</span><a href="https://www.tradingview.com/symbols/PE/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+
+        <!-- METALS -->
+        <div class="card fade-in"><span class="icon">🥇</span><h4 data-i18n="p4_met1">Gold</h4><p data-i18n="p4_met1_desc">XAU/USD</p><span class="tag" data-i18n="p4_tag_met">Metal</span><a href="https://www.tradingview.com/symbols/XAU/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🥈</span><h4 data-i18n="p4_met2">Silver</h4><p data-i18n="p4_met2_desc">XAG/USD</p><span class="tag" data-i18n="p4_tag_met">Metal</span><a href="https://www.tradingview.com/symbols/XAG/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🥉</span><h4 data-i18n="p4_met3">Platinum</h4><p data-i18n="p4_met3_desc">PL</p><span class="tag" data-i18n="p4_tag_met">Metal</span><a href="https://www.tradingview.com/symbols/PL/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">💎</span><h4 data-i18n="p4_met4">Palladium</h4><p data-i18n="p4_met4_desc">PD</p><span class="tag" data-i18n="p4_tag_met">Metal</span><a href="https://www.tradingview.com/symbols/PD/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🔩</span><h4 data-i18n="p4_met5">Copper</h4><p data-i18n="p4_met5_desc">HG</p><span class="tag" data-i18n="p4_tag_met">Metal</span><a href="https://www.tradingview.com/symbols/HG/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🔩</span><h4 data-i18n="p4_met6">Aluminum</h4><p data-i18n="p4_met6_desc">AL</p><span class="tag" data-i18n="p4_tag_met">Metal</span><a href="https://www.tradingview.com/symbols/AL/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🔩</span><h4 data-i18n="p4_met7">Zinc</h4><p data-i18n="p4_met7_desc">ZN</p><span class="tag" data-i18n="p4_tag_met">Metal</span><a href="https://www.tradingview.com/symbols/ZN/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🔩</span><h4 data-i18n="p4_met8">Lead</h4><p data-i18n="p4_met8_desc">PB</p><span class="tag" data-i18n="p4_tag_met">Metal</span><a href="https://www.tradingview.com/symbols/PB/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🔩</span><h4 data-i18n="p4_met9">Nickel</h4><p data-i18n="p4_met9_desc">NI</p><span class="tag" data-i18n="p4_tag_met">Metal</span><a href="https://www.tradingview.com/symbols/NI/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🔩</span><h4 data-i18n="p4_met10">Steel</h4><p data-i18n="p4_met10_desc">HRC</p><span class="tag" data-i18n="p4_tag_met">Metal</span><a href="https://www.tradingview.com/symbols/HRC/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🔩</span><h4 data-i18n="p4_met11">Iron Ore</h4><p data-i18n="p4_met11_desc">Iron Ore</p><span class="tag" data-i18n="p4_tag_met">Metal</span><a href="https://www.tradingview.com/symbols/IRON/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🔩</span><h4 data-i18n="p4_met12">Uranium</h4><p data-i18n="p4_met12_desc">U</p><span class="tag" data-i18n="p4_tag_met">Metal</span><a href="https://www.tradingview.com/symbols/URANIUM/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+
+        <!-- AGRICULTURE -->
+        <div class="card fade-in"><span class="icon">🌾</span><h4 data-i18n="p4_ag1">Wheat</h4><p data-i18n="p4_ag1_desc">Wheat</p><span class="tag" data-i18n="p4_tag_ag">Grain</span><a href="https://www.tradingview.com/symbols/WHEAT/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🌽</span><h4 data-i18n="p4_ag2">Corn</h4><p data-i18n="p4_ag2_desc">Corn</p><span class="tag" data-i18n="p4_tag_ag">Grain</span><a href="https://www.tradingview.com/symbols/CORN/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🌾</span><h4 data-i18n="p4_ag3">Soybean</h4><p data-i18n="p4_ag3_desc">Soybean</p><span class="tag" data-i18n="p4_tag_ag">Grain</span><a href="https://www.tradingview.com/symbols/SOYB/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🌾</span><h4 data-i18n="p4_ag4">Rice</h4><p data-i18n="p4_ag4_desc">Rice</p><span class="tag" data-i18n="p4_tag_ag">Grain</span><a href="https://www.tradingview.com/symbols/RICE/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🌾</span><h4 data-i18n="p4_ag5">Barley</h4><p data-i18n="p4_ag5_desc">Barley</p><span class="tag" data-i18n="p4_tag_ag">Grain</span><a href="https://www.tradingview.com/symbols/BARLEY/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🌾</span><h4 data-i18n="p4_ag6">Oats</h4><p data-i18n="p4_ag6_desc">Oats</p><span class="tag" data-i18n="p4_tag_ag">Grain</span><a href="https://www.tradingview.com/symbols/OATS/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">☕</span><h4 data-i18n="p4_ag7">Coffee</h4><p data-i18n="p4_ag7_desc">Coffee</p><span class="tag" data-i18n="p4_tag_ag">Agri</span><a href="https://www.tradingview.com/symbols/COFFEE/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🍫</span><h4 data-i18n="p4_ag8">Cocoa</h4><p data-i18n="p4_ag8_desc">Cocoa</p><span class="tag" data-i18n="p4_tag_ag">Agri</span><a href="https://www.tradingview.com/symbols/COCOA/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🍊</span><h4 data-i18n="p4_ag9">Orange Juice</h4><p data-i18n="p4_ag9_desc">OJ</p><span class="tag" data-i18n="p4_tag_ag">Agri</span><a href="https://www.tradingview.com/symbols/OJ/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🧈</span><h4 data-i18n="p4_ag10">Butter</h4><p data-i18n="p4_ag10_desc">Butter</p><span class="tag" data-i18n="p4_tag_ag">Agri</span><a href="https://www.tradingview.com/symbols/BUTTER/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🥛</span><h4 data-i18n="p4_ag11">Milk Powder</h4><p data-i18n="p4_ag11_desc">Milk Powder</p><span class="tag" data-i18n="p4_tag_ag">Agri</span><a href="https://www.tradingview.com/symbols/MILK/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🐄</span><h4 data-i18n="p4_ag12">Cattle</h4><p data-i18n="p4_ag12_desc">Cattle</p><span class="tag" data-i18n="p4_tag_ag">Agri</span><a href="https://www.tradingview.com/symbols/CATTLE/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+
+        <!-- ENERGY & OTHER -->
+        <div class="card fade-in"><span class="icon">⚡</span><h4 data-i18n="p4_energy1">Electricity</h4><p data-i18n="p4_energy1_desc">Power</p><span class="tag" data-i18n="p4_tag_energy">Energy</span><a href="https://www.tradingview.com/symbols/ELEC/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">☀️</span><h4 data-i18n="p4_energy2">Solar Energy</h4><p data-i18n="p4_energy2_desc">Solar</p><span class="tag" data-i18n="p4_tag_energy">Energy</span><a href="https://www.tradingview.com/symbols/SOLAR/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">💨</span><h4 data-i18n="p4_energy3">Wind Energy</h4><p data-i18n="p4_energy3_desc">Wind</p><span class="tag" data-i18n="p4_tag_energy">Energy</span><a href="https://www.tradingview.com/symbols/WIND/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🌊</span><h4 data-i18n="p4_energy4">Hydro Energy</h4><p data-i18n="p4_energy4_desc">Hydro</p><span class="tag" data-i18n="p4_tag_energy">Energy</span><a href="https://www.tradingview.com/symbols/HYDRO/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">⛏️</span><h4 data-i18n="p4_energy5">Coal</h4><p data-i18n="p4_energy5_desc">Coal</p><span class="tag" data-i18n="p4_tag_energy">Energy</span><a href="https://www.tradingview.com/symbols/COAL/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🪨</span><h4 data-i18n="p4_raw1">Timber</h4><p data-i18n="p4_raw1_desc">Timber</p><span class="tag" data-i18n="p4_tag_raw">Raw</span><a href="https://www.tradingview.com/symbols/TIMBER/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🪨</span><h4 data-i18n="p4_raw2">Pulp</h4><p data-i18n="p4_raw2_desc">Pulp</p><span class="tag" data-i18n="p4_tag_raw">Raw</span><a href="https://www.tradingview.com/symbols/PULP/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🪨</span><h4 data-i18n="p4_raw3">Rubber</h4><p data-i18n="p4_raw3_desc">Rubber</p><span class="tag" data-i18n="p4_tag_raw">Raw</span><a href="https://www.tradingview.com/symbols/RUBBER/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🪨</span><h4 data-i18n="p4_raw4">Cotton</h4><p data-i18n="p4_raw4_desc">Cotton</p><span class="tag" data-i18n="p4_tag_raw">Raw</span><a href="https://www.tradingview.com/symbols/COTTON/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🪨</span><h4 data-i18n="p4_raw5">Wool</h4><p data-i18n="p4_raw5_desc">Wool</p><span class="tag" data-i18n="p4_tag_raw">Raw</span><a href="https://www.tradingview.com/symbols/WOOL/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🪨</span><h4 data-i18n="p4_raw6">Sugar</h4><p data-i18n="p4_raw6_desc">Sugar</p><span class="tag" data-i18n="p4_tag_raw">Raw</span><a href="https://www.tradingview.com/symbols/SUGAR/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+        <div class="card fade-in"><span class="icon">🪨</span><h4 data-i18n="p4_raw7">Salt</h4><p data-i18n="p4_raw7_desc">Salt</p><span class="tag" data-i18n="p4_tag_raw">Raw</span><a href="https://www.tradingview.com/symbols/SALT/" class="link" target="_blank" data-i18n="p4_link_trade">Trade →</a></div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="mastercard-global-banner">
+        <div>
+            <h3 data-i18n="mastercard_banner_title">🌐 Official <span style="color:#eb001b;">MasterCard Global</span></h3>
+            <p data-i18n="mastercard_banner_desc">Powering economies and empowering people. Innovative solutions for a safer, smarter, digital economy.</p>
+        </div>
+        <a href="https://www.mastercard.com/global/en.html" target="_blank" class="btn-primary" style="flex-shrink:0;" data-i18n="mastercard_banner_btn">Visit mastercard.com →</a>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-inner">
+            <div class="logo-wrap"><img src="mc-logo-primary.png" alt="MasterCard" style="height:32px;" /><span style="font-size:16px;background:linear-gradient(135deg,#eb001b,#f79e1b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">MasterCard</span></div>
+            <div class="footer-socials">
+                <a href="https://www.mastercard.com/global/en.html" target="_blank">🌐 MasterCard Global</a>
+                <a href="https://twitter.com/mastercard" target="_blank">🐦 X</a>
+                <a href="https://t.me/mastercard_official" target="_blank">💬 Telegram</a>
+            </div>
+        </div>
+        <div class="footer-disclaimer" data-i18n="footer_disclaimer">⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR).</div>
+    </div>
+</footer>
+
+<script>
+    function calcTrade() {
+        const amount = parseFloat(document.getElementById('tradeAmount').value);
+        const entry = parseFloat(document.getElementById('entryPrice').value);
+        const exit = parseFloat(document.getElementById('exitPrice').value);
+        if (!amount || !entry || !exit) { document.getElementById('tradeResult').textContent = 'Fill in all fields'; return; }
+        const units = amount / entry;
+        const profit = units * (exit - entry);
+        const roi = (profit / amount) * 100;
+        document.getElementById('tradeResult').textContent = `Profit: $${profit.toFixed(2)} | ROI: ${roi.toFixed(2)}%`;
+    }
+    calcTrade();
+
+    const translations = {
+        en: {
+            nav_home: "Home", nav_finance: "Finance", nav_crypto: "Crypto", nav_exchange: "Exchange",
+            nav_insurance: "Insurance", nav_business: "Business", nav_travel: "Travel", nav_cards: "Cards", nav_buy: "Buy MasterCard",
+            hero_btn_mastercard: "🌐 MasterCard Global",
+            mastercard_banner_title: "🌐 Official MasterCard Global",
+            mastercard_banner_desc: "Powering economies and empowering people. Innovative solutions for a safer, smarter, digital economy.",
+            mastercard_banner_btn: "Visit mastercard.com →",
+            footer_disclaimer: "⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR).",
+            p4_badge: "📈 100+ Trading Products",
+            p4_title: "Exchange", p4_title2: "Trading",
+            p4_desc: "Stocks, oil, gas, metals, grain, timber, coal, electricity and more than 100 products through MasterCard.",
+            p4_calc_title: "📊 Trading Profit Calculator",
+            p4_calc_amount: "Investment ($)", p4_calc_entry: "Entry Price ($)", p4_calc_exit: "Exit Price ($)", p4_calc_btn: "Calculate",
+            p4_sec_title: "All", p4_sec_title2: "Trading Products", p4_sec_desc: "Stocks, commodities, energy and more than 100 instruments through MasterCard.",
+            p4_link_trade: "Trade →",
+            p4_tag_stock: "Stocks", p4_tag_oil: "Oil", p4_tag_gas: "Gas", p4_tag_petro: "Petrochem", p4_tag_met: "Metal", p4_tag_ag: "Grain", p4_tag_energy: "Energy", p4_tag_raw: "Raw",
+            p4_stock1: "S&P 500 Stocks", p4_stock1_desc: "USA",
+            p4_stock2: "NASDAQ Stocks", p4_stock2_desc: "Technology",
+            p4_stock3: "MOEX Stocks", p4_stock3_desc: "Russia",
+            p4_stock4: "Tokyo Stocks", p4_stock4_desc: "Japan",
+            p4_stock5: "Shanghai Stocks", p4_stock5_desc: "China",
+            p4_stock6: "Euro Stocks", p4_stock6_desc: "EURO STOXX 50",
+            p4_stock7: "FTSE 100 Stocks", p4_stock7_desc: "UK",
+            p4_stock8: "DAX 40 Stocks", p4_stock8_desc: "Germany",
+            p4_stock9: "CAC 40 Stocks", p4_stock9_desc: "France",
+            p4_stock10: "NIFTY 50 Stocks", p4_stock10_desc: "India",
+            p4_stock11: "ASX 200 Stocks", p4_stock11_desc: "Australia",
+            p4_stock12: "TSX 60 Stocks", p4_stock12_desc: "Canada",
+            p4_oil1: "Brent Oil", p4_oil1_desc: "Brent crude",
+            p4_oil2: "WTI Oil", p4_oil2_desc: "WTI crude",
+            p4_oil3: "Urals Oil", p4_oil3_desc: "Russia",
+            p4_oil4: "Dubai Oil", p4_oil4_desc: "UAE",
+            p4_gas1: "Natural Gas", p4_gas1_desc: "Henry Hub",
+            p4_gas2: "LNG", p4_gas2_desc: "Liquefied gas",
+            p4_petro1: "Gasoline", p4_petro1_desc: "Rbob Gasoline",
+            p4_petro2: "Diesel", p4_petro2_desc: "Heating Oil",
+            p4_petro3: "Propane", p4_petro3_desc: "LPG",
+            p4_petro4: "Ethylene", p4_petro4_desc: "Plastic feedstock",
+            p4_petro5: "Polypropylene", p4_petro5_desc: "Plastic",
+            p4_petro6: "Polyethylene", p4_petro6_desc: "Plastic",
+            p4_met1: "Gold", p4_met1_desc: "XAU/USD",
+            p4_met2: "Silver", p4_met2_desc: "XAG/USD",
+            p4_met3: "Platinum", p4_met3_desc: "PL",
+            p4_met4: "Palladium", p4_met4_desc: "PD",
+            p4_met5: "Copper", p4_met5_desc: "HG",
+            p4_met6: "Aluminum", p4_met6_desc: "AL",
+            p4_met7: "Zinc", p4_met7_desc: "ZN",
+            p4_met8: "Lead", p4_met8_desc: "PB",
+            p4_met9: "Nickel", p4_met9_desc: "NI",
+            p4_met10: "Steel", p4_met10_desc: "HRC",
+            p4_met11: "Iron Ore", p4_met11_desc: "Iron Ore",
+            p4_met12: "Uranium", p4_met12_desc: "U",
+            p4_ag1: "Wheat", p4_ag1_desc: "Wheat",
+            p4_ag2: "Corn", p4_ag2_desc: "Corn",
+            p4_ag3: "Soybean", p4_ag3_desc: "Soybean",
+            p4_ag4: "Rice", p4_ag4_desc: "Rice",
+            p4_ag5: "Barley", p4_ag5_desc: "Barley",
+            p4_ag6: "Oats", p4_ag6_desc: "Oats",
+            p4_ag7: "Coffee", p4_ag7_desc: "Coffee",
+            p4_ag8: "Cocoa", p4_ag8_desc: "Cocoa",
+            p4_ag9: "Orange Juice", p4_ag9_desc: "OJ",
+            p4_ag10: "Butter", p4_ag10_desc: "Butter",
+            p4_ag11: "Milk Powder", p4_ag11_desc: "Milk Powder",
+            p4_ag12: "Cattle", p4_ag12_desc: "Cattle",
+            p4_energy1: "Electricity", p4_energy1_desc: "Power",
+            p4_energy2: "Solar Energy", p4_energy2_desc: "Solar",
+            p4_energy3: "Wind Energy", p4_energy3_desc: "Wind",
+            p4_energy4: "Hydro Energy", p4_energy4_desc: "Hydro",
+            p4_energy5: "Coal", p4_energy5_desc: "Coal",
+            p4_raw1: "Timber", p4_raw1_desc: "Timber",
+            p4_raw2: "Pulp", p4_raw2_desc: "Pulp",
+            p4_raw3: "Rubber", p4_raw3_desc: "Rubber",
+            p4_raw4: "Cotton", p4_raw4_desc: "Cotton",
+            p4_raw5: "Wool", p4_raw5_desc: "Wool",
+            p4_raw6: "Sugar", p4_raw6_desc: "Sugar",
+            p4_raw7: "Salt", p4_raw7_desc: "Salt"
+        },
+        ru: {
+            nav_home: "Главная", nav_finance: "Финансы", nav_crypto: "Крипто", nav_exchange: "Биржа",
+            nav_insurance: "Страхование", nav_business: "Бизнес", nav_travel: "Туризм", nav_cards: "Карты", nav_buy: "Купить MasterCard",
+            hero_btn_mastercard: "🌐 MasterCard Global",
+            mastercard_banner_title: "🌐 Официальный сайт MasterCard Global",
+            mastercard_banner_desc: "Расширение экономических возможностей и расширение прав и возможностей людей. Инновационные решения для более безопасной, умной и цифровой экономики.",
+            mastercard_banner_btn: "Перейти на mastercard.com →",
+            footer_disclaimer: "⚠️ Данный проект является сообщественным и не аффилирован с Mastercard Incorporated. Криптовалютные инвестиции сопряжены с высоким риском. Всегда проводите собственное исследование (DYOR).",
+            p4_badge: "📈 100+ биржевых продуктов",
+            p4_title: "Биржевые", p4_title2: "торги",
+            p4_desc: "Акции, нефть, газ, металлы, зерно, лес, уголь, электроэнергия и более 100 продуктов через MasterCard.",
+            p4_calc_title: "📊 Калькулятор прибыли от торговли",
+            p4_calc_amount: "Сумма инвестиций ($)", p4_calc_entry: "Цена входа ($)", p4_calc_exit: "Цена выхода ($)", p4_calc_btn: "Рассчитать",
+            p4_sec_title: "Все", p4_sec_title2: "биржевые товары", p4_sec_desc: "Акции, сырьё, энергия и более 100 инструментов через MasterCard.",
+            p4_link_trade: "Торговать →",
+            p4_tag_stock: "Акции", p4_tag_oil: "Нефть", p4_tag_gas: "Газ", p4_tag_petro: "Нефтехимия", p4_tag_met: "Металл", p4_tag_ag: "Зерно", p4_tag_energy: "Энергия", p4_tag_raw: "Сырьё",
+            p4_stock1: "Акции S&P 500", p4_stock1_desc: "США",
+            p4_stock2: "Акции NASDAQ", p4_stock2_desc: "Технологии",
+            p4_stock3: "Акции МосБиржи", p4_stock3_desc: "Россия",
+            p4_stock4: "Акции Токио", p4_stock4_desc: "Япония",
+            p4_stock5: "Акции Шанхая", p4_stock5_desc: "Китай",
+            p4_stock6: "Акции Евро", p4_stock6_desc: "EURO STOXX 50",
+            p4_stock7: "Акции FTSE 100", p4_stock7_desc: "Великобритания",
+            p4_stock8: "Акции DAX 40", p4_stock8_desc: "Германия",
+            p4_stock9: "Акции CAC 40", p4_stock9_desc: "Франция",
+            p4_stock10: "Акции NIFTY 50", p4_stock10_desc: "Индия",
+            p4_stock11: "Акции ASX 200", p4_stock11_desc: "Австралия",
+            p4_stock12: "Акции TSX 60", p4_stock12_desc: "Канада",
+            p4_oil1: "Нефть Brent", p4_oil1_desc: "Сорт Brent",
+            p4_oil2: "Нефть WTI", p4_oil2_desc: "Сорт WTI",
+            p4_oil3: "Нефть Urals", p4_oil3_desc: "Россия",
+            p4_oil4: "Нефть Dubai", p4_oil4_desc: "ОАЭ",
+            p4_gas1: "Природный газ", p4_gas1_desc: "Henry Hub",
+            p4_gas2: "СПГ", p4_gas2_desc: "Сжиженный газ",
+            p4_petro1: "Бензин", p4_petro1_desc: "Rbob Gasoline",
+            p4_petro2: "Дизель", p4_petro2_desc: "Heating Oil",
+            p4_petro3: "Пропан", p4_petro3_desc: "Сжиженный газ",
+            p4_petro4: "Этилен", p4_petro4_desc: "Сырьё для пластика",
+            p4_petro5: "Полипропилен", p4_petro5_desc: "Пластик",
+            p4_petro6: "Полиэтилен", p4_petro6_desc: "Пластик",
+            p4_met1: "Золото", p4_met1_desc: "XAU/USD",
+            p4_met2: "Серебро", p4_met2_desc: "XAG/USD",
+            p4_met3: "Платина", p4_met3_desc: "PL",
+            p4_met4: "Палладий", p4_met4_desc: "PD",
+            p4_met5: "Медь", p4_met5_desc: "HG",
+            p4_met6: "Алюминий", p4_met6_desc: "AL",
+            p4_met7: "Цинк", p4_met7_desc: "ZN",
+            p4_met8: "Свинец", p4_met8_desc: "PB",
+            p4_met9: "Никель", p4_met9_desc: "NI",
+            p4_met10: "Сталь", p4_met10_desc: "HRC",
+            p4_met11: "Железная руда", p4_met11_desc: "Iron Ore",
+            p4_met12: "Уран", p4_met12_desc: "U",
+            p4_ag1: "Пшеница", p4_ag1_desc: "Wheat",
+            p4_ag2: "Кукуруза", p4_ag2_desc: "Corn",
+            p4_ag3: "Соя", p4_ag3_desc: "Soybean",
+            p4_ag4: "Рис", p4_ag4_desc: "Rice",
+            p4_ag5: "Ячмень", p4_ag5_desc: "Barley",
+            p4_ag6: "Овёс", p4_ag6_desc: "Oats",
+            p4_ag7: "Кофе", p4_ag7_desc: "Coffee",
+            p4_ag8: "Какао", p4_ag8_desc: "Cocoa",
+            p4_ag9: "Апельсиновый сок", p4_ag9_desc: "OJ",
+            p4_ag10: "Сливочное масло", p4_ag10_desc: "Butter",
+            p4_ag11: "Сухое молоко", p4_ag11_desc: "Milk Powder",
+            p4_ag12: "КРС", p4_ag12_desc: "Cattle",
+            p4_energy1: "Электроэнергия", p4_energy1_desc: "Power",
+            p4_energy2: "Солнечная энергия", p4_energy2_desc: "Solar",
+            p4_energy3: "Ветряная энергия", p4_energy3_desc: "Wind",
+            p4_energy4: "Гидроэнергия", p4_energy4_desc: "Hydro",
+            p4_energy5: "Уголь", p4_energy5_desc: "Coal",
+            p4_raw1: "Лес", p4_raw1_desc: "Timber",
+            p4_raw2: "Целлюлоза", p4_raw2_desc: "Pulp",
+            p4_raw3: "Резина", p4_raw3_desc: "Rubber",
+            p4_raw4: "Хлопок", p4_raw4_desc: "Cotton",
+            p4_raw5: "Шерсть", p4_raw5_desc: "Wool",
+            p4_raw6: "Сахар", p4_raw6_desc: "Sugar",
+            p4_raw7: "Соль", p4_raw7_desc: "Salt"
+        },
+        es: {}, fr: {}, zh: {}, ja: {}, ar: {}, hi: {}
+    };
+
+    let currentLang = localStorage.getItem('mastercardLang') || 'en';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('mastercardLang', lang);
+        document.querySelectorAll('#languageSwitcher a').forEach(el => {
+            el.classList.toggle('active', el.dataset.lang === lang);
+        });
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            const translation = translations[lang]?.[key];
+            if (translation !== undefined) el.textContent = translation;
+        });
+        document.documentElement.lang = lang;
+    }
+
+    document.querySelectorAll('#languageSwitcher a').forEach(el => {
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            setLanguage(this.dataset.lang);
+        });
+    });
+
+    const faders = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    faders.forEach(el => observer.observe(el));
+
+    setLanguage(currentLang);
+</script>
+</body>
+</html>
