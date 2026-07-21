@@ -6,8 +6,6 @@
     <title>MasterCard – Interbank Settlement Token on Solana</title>
     <meta name="description" content="MasterCard – Multi-Asset Settlement Token. Interbank bridge between TradFi and DeFi on Solana." />
     <link rel="icon" href="mc-favicon.png" type="image/png" />
-    
-    <!-- Open Graph -->
     <meta property="og:title" content="MasterCard Token on Solana" />
     <meta property="og:description" content="Multi-Asset Settlement Token – interbank bridge between TradFi and DeFi." />
     <meta property="og:image" content="mc-og-image.jpg" />
@@ -16,17 +14,10 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: #0a0a1a;
-            color: #ffffff;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0a0a1a; color: #fff; line-height: 1.6; overflow-x: hidden; }
         a { color: #eb001b; text-decoration: none; }
         .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
 
-        /* ===== LANGUAGE BAR ===== */
         .lang-bar {
             background: rgba(255,255,255,0.03);
             border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -42,7 +33,6 @@
         .lang-bar a:hover { color: #ffffff; background: rgba(255,255,255,0.06); }
         .lang-bar a.active { color: #eb001b; background: rgba(235,0,27,0.12); }
 
-        /* ===== ANIMATED BACKGROUND ===== */
         .bg-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
             background: radial-gradient(ellipse at 20% 50%, #1a1a4e, #0a0a1a 70%);
@@ -63,7 +53,6 @@
         .orb-5 { width: 250px; height: 250px; background: #ffd93d; bottom: 20%; left: 10%; animation-delay: -9s; }
         @keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(60px,-40px) scale(1.2); } }
 
-        /* ===== TICKER ===== */
         .ticker-wrap {
             position: relative; z-index: 5; width: 100%; overflow: hidden;
             background: rgba(255,255,255,0.03);
@@ -83,7 +72,6 @@
         .ticker .highlight { color: #f79e1b; }
         @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* ===== HEADER ===== */
         header {
             position: relative; z-index: 10; padding: 18px 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -113,7 +101,6 @@
         }
         .btn-header:hover { transform: scale(1.04); box-shadow: 0 6px 30px rgba(235,0,27,0.5); }
 
-        /* ===== HERO ===== */
         .hero { position: relative; z-index: 5; padding: 60px 0 40px; min-height: 85vh; display: flex; align-items: center; }
         .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
         .hero-content h1 { font-size: clamp(38px, 6vw, 64px); font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
@@ -138,7 +125,6 @@
         .hero-stats .label { font-size: 13px; color: #7a84a3; }
         .hero-visual video, .hero-visual img { width: 100%; max-width: 560px; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.06); }
 
-        /* ===== POOL INFO ===== */
         .pool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin: 32px 0; position: relative; z-index: 5; }
         .pool-card {
             background: rgba(255,255,255,0.03); backdrop-filter: blur(8px);
@@ -162,7 +148,6 @@
         }
         .pool-card .link-btn:hover { transform: scale(1.04); }
 
-        /* ===== SECTION ===== */
         .section-title { text-align: center; margin-bottom: 48px; }
         .section-title h2 { font-size: clamp(28px, 3.5vw, 40px); font-weight: 700; margin-bottom: 10px; }
         .section-title p { color: #b0b8d1; max-width: 600px; margin: 0 auto; }
@@ -172,7 +157,6 @@
             letter-spacing: 0.5px; margin-bottom: 14px; border: 1px solid rgba(235,0,27,0.15);
         }
 
-        /* ===== CARDS ===== */
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin: 32px 0; }
         .card {
             background: rgba(255,255,255,0.03); backdrop-filter: blur(8px);
@@ -186,7 +170,6 @@
         .card p { color: #b0b8d1; font-size: 14px; margin-bottom: 12px; }
         .card .tag { display: inline-block; background: rgba(235,0,27,0.08); color: #eb001b; padding: 2px 14px; border-radius: 40px; font-size: 12px; font-weight: 600; border: 1px solid rgba(235,0,27,0.08); }
 
-        /* ===== BUY ===== */
         .buy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0; }
         .buy-item {
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
@@ -196,7 +179,6 @@
         .buy-item a { font-weight: 600; font-size: 14px; display: block; }
         .buy-item .sub { font-size: 12px; color: #7a84a3; }
 
-        /* ===== MASTERCARD GLOBAL BANNER ===== */
         .mastercard-global-banner {
             background: linear-gradient(135deg, rgba(26,26,78,0.8), rgba(10,10,26,0.8));
             border: 1px solid rgba(235,0,27,0.15);
@@ -206,7 +188,6 @@
         .mastercard-global-banner h3 { font-size: 22px; }
         .mastercard-global-banner p { color: #b0b8d1; max-width: 500px; }
 
-        /* ===== FOOTER ===== */
         footer { position: relative; z-index: 5; padding: 40px 0 24px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px; }
         .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
         .footer-inner p { color: #5a6380; font-size: 14px; }
@@ -283,10 +264,13 @@
             </div>
             <nav class="nav-links">
                 <a href="index.html" class="active" data-i18n="nav_home">Home</a>
-                <a href="#about" data-i18n="nav_about">About</a>
-                <a href="#features" data-i18n="nav_features">Features</a>
-                <a href="#tokenomics" data-i18n="nav_tokenomics">Tokenomics</a>
-                <a href="#pools" data-i18n="nav_pools">Pools</a>
+                <a href="page2.html" data-i18n="nav_finance">Finance</a>
+                <a href="page3.html" data-i18n="nav_crypto">Crypto</a>
+                <a href="page4.html" data-i18n="nav_exchange">Exchange</a>
+                <a href="page5.html" data-i18n="nav_insurance">Insurance</a>
+                <a href="page6.html" data-i18n="nav_business">Business</a>
+                <a href="page7.html" data-i18n="nav_travel">Travel</a>
+                <a href="page8.html" data-i18n="nav_cards">Cards</a>
                 <a href="#buy" class="btn-header" data-i18n="nav_buy">Buy MasterCard</a>
             </nav>
         </div>
@@ -303,7 +287,7 @@
                 <p data-i18n="hero_desc">Interbank bridge between Traditional Finance and DeFi. Solana speed + MasterCard reliability. Cashback 2%, 0.05% fee.</p>
                 <div class="hero-buttons">
                     <a href="#buy" class="btn-primary" data-i18n="hero_btn_buy">🚀 Buy MasterCard</a>
-                    <a href="#features" class="btn-secondary" data-i18n="hero_btn_features">⚡ Features</a>
+                    <a href="page2.html" class="btn-secondary" data-i18n="hero_btn_services">📊 All Services</a>
                     <a href="https://www.mastercard.com/global/en.html" target="_blank" class="btn-secondary" data-i18n="hero_btn_mastercard">🌐 MasterCard Global</a>
                 </div>
                 <div class="hero-stats">
@@ -489,11 +473,12 @@
     <script>
         const translations = {
             en: {
-                nav_home: "Home", nav_about: "About", nav_features: "Features", nav_tokenomics: "Tokenomics", nav_pools: "Pools", nav_buy: "Buy MasterCard",
+                nav_home: "Home", nav_finance: "Finance", nav_crypto: "Crypto", nav_exchange: "Exchange",
+                nav_insurance: "Insurance", nav_business: "Business", nav_travel: "Travel", nav_cards: "Cards", nav_buy: "Buy MasterCard",
                 hero_badge: "🔥 Multi-Asset Settlement Token",
                 hero_title_part1: "MasterCard", hero_title_part2: "on Solana",
                 hero_desc: "Interbank bridge between Traditional Finance and DeFi. Solana speed + MasterCard reliability. Cashback 2%, 0.05% fee.",
-                hero_btn_buy: "🚀 Buy MasterCard", hero_btn_features: "⚡ Features", hero_btn_mastercard: "🌐 MasterCard Global",
+                hero_btn_buy: "🚀 Buy MasterCard", hero_btn_services: "📊 All Services", hero_btn_mastercard: "🌐 MasterCard Global",
                 stat_supply: "Total Supply", stat_price: "Price", stat_fee: "Transfer Fee", stat_cashback: "Cashback",
                 features_badge: "⚡ 100+ Features", features_title: "Ecosystem", features_desc: "All capabilities of interbank finance and DeFi in one token.",
                 card1_title: "Interbank Bridge", card1_desc: "Connect banks and financial institutions via Solana.", card1_tag: "B2B",
@@ -513,11 +498,12 @@
                 footer_disclaimer: "⚠️ This project is community-driven and not affiliated with Mastercard Incorporated. Cryptocurrency investments carry high risk. Always do your own research (DYOR)."
             },
             ru: {
-                nav_home: "Главная", nav_about: "О токене", nav_features: "Возможности", nav_tokenomics: "Токеномика", nav_pools: "Пулы", nav_buy: "Купить MasterCard",
+                nav_home: "Главная", nav_finance: "Финансы", nav_crypto: "Крипто", nav_exchange: "Биржа",
+                nav_insurance: "Страхование", nav_business: "Бизнес", nav_travel: "Туризм", nav_cards: "Карты", nav_buy: "Купить MasterCard",
                 hero_badge: "🔥 Мультиактивный расчетный токен",
                 hero_title_part1: "MasterCard", hero_title_part2: "на Solana",
                 hero_desc: "Межбанковский мост между традиционными финансами и DeFi. Скорость Solana + надёжность MasterCard. Кэшбэк 2%, комиссия 0.05%.",
-                hero_btn_buy: "🚀 Купить MasterCard", hero_btn_features: "⚡ Возможности", hero_btn_mastercard: "🌐 MasterCard Global",
+                hero_btn_buy: "🚀 Купить MasterCard", hero_btn_services: "📊 Все сервисы", hero_btn_mastercard: "🌐 MasterCard Global",
                 stat_supply: "Общая эмиссия", stat_price: "Цена", stat_fee: "Комиссия", stat_cashback: "Кэшбэк",
                 features_badge: "⚡ 100+ функций", features_title: "Экосистема", features_desc: "Все возможности межбанковских финансов и DeFi в одном токене.",
                 card1_title: "Межбанковский мост", card1_desc: "Связь между банками и финансовыми институтами через Solana.", card1_tag: "B2B",
